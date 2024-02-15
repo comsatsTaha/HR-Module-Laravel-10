@@ -6054,7 +6054,6 @@ table.table-inbox tbody tr.checked {
 
 .error-page {
     align-items: center;
-    background-color: rgba(244, 59, 72, 0.2);
     color: #1f1f1f;
     display: flex;
 }
