@@ -8,6 +8,7 @@
                 <div class="account-logo">
                 </div>
                 {{-- message --}}
+                
                 {!! Toastr::message() !!}
                 <!-- /Account Logo -->
                 <div class="account-box">

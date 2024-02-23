@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AttendanceEmployee;
+use App\Models\AttendenceEmployee;
 use Illuminate\Http\Request;
 use Brian2694\Toastr\Facades\Toastr;
 use App\Models\LeavesAdmin;
+use Carbon\Carbon;
 use DB;
 use DateTime;
+use Rats\Zkteco\Lib\ZKTeco;
 
 class LeavesController extends Controller
 {
@@ -14,11 +18,11 @@ class LeavesController extends Controller
     public function leaves()
     {
         $leaves = DB::table('leaves_admins')
-                    ->join('users', 'users.user_id', '=', 'leaves_admins.user_id')
-                    ->select('leaves_admins.*', 'users.position','users.name','users.avatar')
-                    ->get();
+            ->join('users', 'users.user_id', '=', 'leaves_admins.user_id')
+            ->select('leaves_admins.*', 'users.position', 'users.name', 'users.avatar')
+            ->get();
 
-        return view('form.leaves',compact('leaves'));
+        return view('form.leaves', compact('leaves'));
     }
     // save record
     public function saveRecord(Request $request)
@@ -46,13 +50,13 @@ class LeavesController extends Controller
             $leaves->day           = $days;
             $leaves->leave_reason  = $request->leave_reason;
             $leaves->save();
-            
+
             DB::commit();
-            Toastr::success('Create new Leaves successfully :)','Success');
+            Toastr::success('Create new Leaves successfully :)', 'Success');
             return redirect()->back();
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             DB::rollback();
-            Toastr::error('Add Leaves fail :)','Error');
+            Toastr::error('Add Leaves fail :)', 'Error');
             return redirect()->back();
         }
     }
@@ -77,13 +81,13 @@ class LeavesController extends Controller
                 'leave_reason' => $request->leave_reason,
             ];
 
-            LeavesAdmin::where('id',$request->id)->update($update);
+            LeavesAdmin::where('id', $request->id)->update($update);
             DB::commit();
-            Toastr::success('Updated Leaves successfully :)','Success');
+            Toastr::success('Updated Leaves successfully :)', 'Success');
             return redirect()->back();
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             DB::rollback();
-            Toastr::error('Update Leaves fail :)','Error');
+            Toastr::error('Update Leaves fail :)', 'Error');
             return redirect()->back();
         }
     }
@@ -94,13 +98,12 @@ class LeavesController extends Controller
         try {
 
             LeavesAdmin::destroy($request->id);
-            Toastr::success('Leaves admin deleted successfully :)','Success');
+            Toastr::success('Leaves admin deleted successfully :)', 'Success');
             return redirect()->back();
-        
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
 
             DB::rollback();
-            Toastr::error('Leaves admin delete fail :)','Error');
+            Toastr::error('Leaves admin delete fail :)', 'Error');
             return redirect()->back();
         }
     }
@@ -114,7 +117,67 @@ class LeavesController extends Controller
     // attendance admin
     public function attendanceIndex()
     {
-        return view('form.attendance');
+
+
+        // $data= [];
+        // $currentYearMonth = date('Y-m');
+
+        // foreach($users as $parent=>$user){
+        //     foreach($attendenceData as $attendence){
+        //         $attendanceDate = date('Y-m-d', strtotime($attendence['timestamp']));
+        //         $attendanceYearMonth = date('Y-m', strtotime($attendence['timestamp']));
+
+        //         // Check if the attendance date is in the current year and month
+        //         if ($user['userid'] == $attendence['id'] && $attendanceYearMonth == $currentYearMonth) {
+        //             if (!isset($data[$attendanceDate])) {
+        //                 $data[$attendanceDate] = [];
+        //             }
+
+        //             if ($attendence['type'] == 0) {
+        //                 // Check-in time for status 0
+        //                 $data[$attendanceDate][$user['name']]['check_in_time'] = $attendence['timestamp'];
+        //             } elseif ($attendence['type'] == 1) {
+        //                 // Check-out time for status 1
+        //                 $data[$attendanceDate][$user['name']]['check_out_time'] = $attendence['timestamp'];
+        //             }
+        //         }
+        //     }
+        // }
+        $currentMonth = Carbon::now()->format('Y-m');
+
+        $attendance = AttendanceEmployee::with('attendance')
+            ->get()
+            ->map(function ($employee) use ($currentMonth) {
+                $attendance_by_date = $employee->attendance
+                    ->filter(function ($attendance) use ($currentMonth) {
+                        return Carbon::parse($attendance->date_time)->format('Y-m') === $currentMonth;
+                    })
+                    ->groupBy(function ($attendance) {
+                        return Carbon::parse($attendance->date_time)->format('Y-m-d');
+                    });
+
+                return [
+                    'employee' => $employee,
+                    'attendance_by_date' => $attendance_by_date,
+                ];
+            });
+
+        $currentMonth = Carbon::now()->startOfMonth();
+        $lastDayOfMonth = Carbon::now()->endOfMonth();
+
+        $dates = [];
+        while ($currentMonth <= $lastDayOfMonth) {
+            $dates[] = $currentMonth->copy();
+            $currentMonth->addDay();
+        }
+
+        $datesOnly = [];
+        foreach ($dates as $carbonDate) {
+            $datesOnly[] = $carbonDate->toDateString();
+        }
+      
+
+        return view('form.attendance', compact('attendance','datesOnly'));
     }
 
     // attendance employee
