@@ -143,24 +143,74 @@ class LeavesController extends Controller
         //         }
         //     }
         // }
+      
+        // $attendance = AttendanceEmployee::with('attendance')
+        //     ->get()
+        //     ->map(function ($employee) use ($currentMonth) {
+        //         $attendance_by_date = $employee->attendance
+        //             ->filter(function ($attendance) use ($currentMonth) {
+        //                 return Carbon::parse($attendance->date_time)->format('Y-m') === $currentMonth;
+        //             })
+        //             ->groupBy(function ($attendance) {
+        //                 return Carbon::parse($attendance->date_time)->format('Y-m-d');
+        //             });
+
+        //         return [
+        //             'employee' => $employee,
+        //             'attendance_by_date' => $attendance_by_date,
+        //         ];
+        //     });
+
         $currentMonth = Carbon::now()->format('Y-m');
 
         $attendance = AttendanceEmployee::with('attendance')
-            ->get()
-            ->map(function ($employee) use ($currentMonth) {
-                $attendance_by_date = $employee->attendance
-                    ->filter(function ($attendance) use ($currentMonth) {
-                        return Carbon::parse($attendance->date_time)->format('Y-m') === $currentMonth;
-                    })
-                    ->groupBy(function ($attendance) {
-                        return Carbon::parse($attendance->date_time)->format('Y-m-d');
-                    });
+    ->get()
+    ->map(function ($employee) use ($currentMonth) {
+        $attendance_by_date = $employee->attendance
+            ->filter(function ($attendance) use ($currentMonth) {
+                return Carbon::parse($attendance->date_time)->format('Y-m') === $currentMonth;
+            })
+            ->groupBy(function ($attendance) {
+                return Carbon::parse($attendance->date_time)->format('Y-m-d');
+            })
+            ->map(function ($groupedAttendance) {
+                $checkIn = null;
+                $checkOut = null;
+
+                foreach ($groupedAttendance as $attendance) {
+                    // dd($attendance);
+                    if ($attendance->type == 0) {
+                        $checkIn = $attendance->date_time;
+                    } elseif ($attendance->type == 1) {
+                        $checkOut = $attendance->date_time;
+                    }
+                }
+
 
                 return [
-                    'employee' => $employee,
-                    'attendance_by_date' => $attendance_by_date,
+                    'check_in' => $checkIn,
+                    'check_out' => $checkOut,
                 ];
             });
+            $uniqueDates = [];
+            $uniqueDates = $employee->attendance
+            ->filter(function ($attendance) use ($currentMonth) {
+                return Carbon::parse($attendance->date_time)->format('Y-m') === $currentMonth;
+            })
+            ->pluck('date_time')
+            ->map(function ($dateTime) {
+                return Carbon::parse($dateTime)->format('Y-m-d');
+            })
+            ->unique()->toArray();
+            // dd($uniqueDates);
+        return [
+            'employee' => $employee,
+            'attendance_by_date' => $attendance_by_date,
+            'uniqueDates' => $uniqueDates
+        ];
+    });
+    
+    // dd($attendance);
 
         $currentMonth = Carbon::now()->startOfMonth();
         $lastDayOfMonth = Carbon::now()->endOfMonth();
