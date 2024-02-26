@@ -9,6 +9,7 @@ use App\Models\Employee;
 use App\Models\department;
 use App\Models\User;
 use App\Models\module_permission;
+use Rats\Zkteco\Lib\ZKTeco;
 
 class EmployeeController extends Controller
 {
@@ -21,7 +22,12 @@ class EmployeeController extends Controller
                     ->get(); 
         $userList = DB::table('users')->get();
         $permission_lists = DB::table('permission_lists')->get();
-        return view('form.allemployeecard',compact('users','userList','permission_lists'));
+        $zk = new ZKTeco('192.168.70.32');
+        $zk->connect();
+        $biometricusers = $zk->getUser();
+
+
+        return view('form.allemployeecard',compact('users','userList','permission_lists','biometricusers'));
     }
     // all employee list
     public function listAllEmployee()
@@ -47,6 +53,8 @@ class EmployeeController extends Controller
             'company'     => 'required|string|max:255',
         ]);
 
+        // dd($request->all());
+
         DB::beginTransaction();
         try{
 
@@ -61,6 +69,7 @@ class EmployeeController extends Controller
                 $employee->gender       = $request->gender;
                 $employee->employee_id  = $request->employee_id;
                 $employee->company      = $request->company;
+                $employee->attendance_employee_id = $request->attendance_employee_id;
                 $employee->save();
     
                 for($i=0;$i<count($request->id_count);$i++)

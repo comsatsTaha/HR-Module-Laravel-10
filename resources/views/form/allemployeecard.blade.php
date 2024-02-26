@@ -106,6 +106,21 @@
                                     </div>
                                 </div>
                             
+                                
+
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="col-form-label">Biometric User <span class="text-danger">*</span></label>
+                                        <select class="form-control" name="attendance_employee_id"> 
+                                        @foreach($biometricusers as $biometricuser)
+                                            <option value="{{$biometricuser['uid']}}">{{$biometricuser['name']}}</option>
+                                        @endforeach
+
+                                        </select>
+                                    </div>
+                                </div>
+
+
                                 <div class="col-sm-6">
                                     <div class="form-group">
                                         <label class="col-form-label">Email <span class="text-danger">*</span></label>

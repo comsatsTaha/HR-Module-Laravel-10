@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Attendance;
 use App\Models\AttendanceEmployee;
 use App\Models\AttendenceEmployee;
+use App\Models\Holiday;
 use Illuminate\Http\Request;
 use Brian2694\Toastr\Facades\Toastr;
 use App\Models\LeavesAdmin;
@@ -118,50 +119,6 @@ class LeavesController extends Controller
     // attendance admin
     public function attendanceIndex()
     {
-
-
-        // $data= [];
-        // $currentYearMonth = date('Y-m');
-
-        // foreach($users as $parent=>$user){
-        //     foreach($attendenceData as $attendence){
-        //         $attendanceDate = date('Y-m-d', strtotime($attendence['timestamp']));
-        //         $attendanceYearMonth = date('Y-m', strtotime($attendence['timestamp']));
-
-        //         // Check if the attendance date is in the current year and month
-        //         if ($user['userid'] == $attendence['id'] && $attendanceYearMonth == $currentYearMonth) {
-        //             if (!isset($data[$attendanceDate])) {
-        //                 $data[$attendanceDate] = [];
-        //             }
-
-        //             if ($attendence['type'] == 0) {
-        //                 // Check-in time for status 0
-        //                 $data[$attendanceDate][$user['name']]['check_in_time'] = $attendence['timestamp'];
-        //             } elseif ($attendence['type'] == 1) {
-        //                 // Check-out time for status 1
-        //                 $data[$attendanceDate][$user['name']]['check_out_time'] = $attendence['timestamp'];
-        //             }
-        //         }
-        //     }
-        // }
-      
-        // $attendance = AttendanceEmployee::with('attendance')
-        //     ->get()
-        //     ->map(function ($employee) use ($currentMonth) {
-        //         $attendance_by_date = $employee->attendance
-        //             ->filter(function ($attendance) use ($currentMonth) {
-        //                 return Carbon::parse($attendance->date_time)->format('Y-m') === $currentMonth;
-        //             })
-        //             ->groupBy(function ($attendance) {
-        //                 return Carbon::parse($attendance->date_time)->format('Y-m-d');
-        //             });
-
-        //         return [
-        //             'employee' => $employee,
-        //             'attendance_by_date' => $attendance_by_date,
-        //         ];
-        //     });
-
         $currentMonth = Carbon::now()->format('Y-m');
         $attendance = AttendanceEmployee::with('attendance')
         ->get()
@@ -181,20 +138,20 @@ class LeavesController extends Controller
                     return Carbon::parse($attendance->date_time)->format('Y-m-d');
                 })
                 ->map(function ($groupedAttendance) {
-                    $checkIn = null;
-                    $checkOut = null;
+                    $firstCheckIn = null;
+                    $lastCheckOut = null;
     
                     foreach ($groupedAttendance as $attendance) {
-                        if ($attendance->type == 0) {
-                            $checkIn = $attendance->date_time;
-                        } elseif ($attendance->type == 1) {
-                            $checkOut = $attendance->date_time;
+                        if ($attendance->type == 0 && ($firstCheckIn == null || $attendance->date_time < $firstCheckIn)) {
+                            $firstCheckIn = $attendance->date_time;
+                        } elseif ($attendance->type == 1 && ($lastCheckOut == null || $attendance->date_time > $lastCheckOut)) {
+                            $lastCheckOut = $attendance->date_time;
                         }
                     }
     
                     return [
-                        'check_in' => $checkIn,
-                        'check_out' => $checkOut,
+                        'check_in' => $firstCheckIn,
+                        'check_out' => $lastCheckOut,
                     ];
                 });
     
@@ -216,12 +173,24 @@ class LeavesController extends Controller
             ];
         });
     
+    
     // dd($attendance);
 
         $currentMonth = Carbon::now()->startOfMonth();
         $lastDayOfMonth = Carbon::now()->endOfMonth();
 
-        $dates = [];
+        // $dates = [];
+        // while ($currentMonth <= $lastDayOfMonth) {
+        //     $dates[] = $currentMonth->copy();
+        //     $currentMonth->addDay();
+        // }
+
+        // $datesOnly = [];
+        // foreach ($dates as $carbonDate) {
+        //     $datesOnly[] = $carbonDate->toDateString();
+        // }
+
+                $dates = [];
         while ($currentMonth <= $lastDayOfMonth) {
             $dates[] = $currentMonth->copy();
             $currentMonth->addDay();
@@ -229,12 +198,16 @@ class LeavesController extends Controller
 
         $datesOnly = [];
         foreach ($dates as $carbonDate) {
-            $datesOnly[] = $carbonDate->toDateString();
+            $datesOnly[$carbonDate->toDateString()] = $carbonDate->format('l');
         }
+        // dd($datesOnly);
+
+        $holidays= Holiday::all();
+        $holidays= $holidays->toArray();
 
      
 
-        return view('form.attendance', compact('attendance','datesOnly'));
+        return view('form.attendance', compact('attendance','datesOnly','holidays'));
     }
 
     // attendance employee

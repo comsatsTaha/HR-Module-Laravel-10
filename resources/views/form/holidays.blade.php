@@ -100,8 +100,8 @@
                             </div>
                             <div class="form-group">
                                 <label>Holiday Date <span class="text-danger">*</span></label>
-                                <div class="cal-icon">
-                                    <input class="form-control datetimepicker" type="text" id="holidayDate" name="holidayDate">
+                                <div>
+                                    <input class="form-control" type="date"  name="holidayDate">
                                 </div>
                             </div>
                             <div class="submit-section">

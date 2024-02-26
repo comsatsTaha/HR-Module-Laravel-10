@@ -19,12 +19,17 @@
                                 @php
                                 $totalHours = 0;
                             @endphp
-                                <h5 class="card-title">Timesheet <small class="text-muted">{{date('d-M-Y',strtotime($innerkey))}}</small></h5>
+                                <h5 class="card-title">Timesheet - <small class="text-muted">{{date('d-M-Y',strtotime($innerkey))}}</small></h5>
                                 @foreach($attendancebydate as $singleKey=>$singleattendance)
                                 @if($singleKey== "check_in")
                                 <div class="punch-det">
                                     <h6>Punch In at</h6>
+                                    @if($singleattendance !=null )
                                     <p style="color: black"> {{date('h:i:s',strtotime($singleattendance))}}</p>
+                                    @else
+                                    <p style="color: red"> Not Checked In</p>
+
+                                    @endif
                                 </div>
                                 @php
                                 $checkInTime = strtotime($singleattendance);
@@ -33,12 +38,24 @@
                                 @else
                                 <div class="punch-det">
                                     <h6>Punch Out at</h6>
+                                    @if($singleattendance !=null )
                                     <p style="color: black"> {{date('h:i:s',strtotime($singleattendance))}}</p>
+                                    @else
+                                    <p style="color: red"> Not Checked Out</p>
+
+                                    @endif
                                 </div>
                                 @php
                                 $checkOutTime = strtotime($singleattendance);
-                                $hoursWorked = ($checkOutTime - $checkInTime) / 3600; // Convert seconds to hours
+                                if($checkOutTime && $checkInTime){
+                                    $hoursWorked = ($checkOutTime - $checkInTime) / 3600; // Convert seconds to hours
                                 $totalHours += $hoursWorked;
+                                }
+                                else{
+                                    $hoursWorked = 0; // Convert seconds to hours
+                                $totalHours = 0;
+                                }
+                              
                             @endphp
                                 @continue
                                 @endif
@@ -52,11 +69,16 @@
                                 </div> --}}
                           
                                 @endforeach
+
+                                <span style="display:flex;justify-content: center">Total Hours</span>
                                 <div class="punch-info">
                                     <div class="punch-hours">
-                                        <span>{{ number_format($totalHours, 2) }} hrs</span>
+                                        <span>{{ floor($totalHours) }} hrs {{ round(($totalHours - floor($totalHours)) * 60) }} mins</span>
                                     </div>
                                 </div>
+                                
+                                
+                                
                                 {{-- <div class="statistics">
                                     <div class="row">
                                         <div class="col-md-6 col-6 text-center">
@@ -108,7 +130,7 @@
                                         <p class="mb-0">Overtime</p>
                                         <p class="res-activity-time" style="color: black">
                                             <i class="fa fa-clock-o"></i>
-                                            {{ number_format($overtimeHours, 2) }} hrs
+                                            {{ number_format($overtimeHours, 2) }} hrs & min
                                         </p>
                                     </li>
                                     @endif

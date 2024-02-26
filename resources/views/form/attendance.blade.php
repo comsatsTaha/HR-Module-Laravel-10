@@ -73,8 +73,8 @@
                         <thead>
                             <tr>
                                 <th>Employee</th>
-                                @foreach($datesOnly as $date)
-                                <th>{{$date}}</th>
+                                @foreach($datesOnly as $key=> $date)
+                                <th>{{$key}}<br>{{$date}}</th>
 
                                 @endforeach
 
@@ -90,19 +90,26 @@
                                             <a href="profile.html">{{$att['employee']['name']}}</a>
                                         </h2>
                                     </td>
-                                    @foreach($datesOnly as $date)
+                                    @php
+                                    $holidayDates = array_column($holidays, 'date_holiday');
+                                @endphp
+                                    @foreach($datesOnly as $datekey=>$date)
                                         <td>
                                             @foreach($att['attendance_by_date'] as $innerkey=>$attendancebydate)
-                                                @if(in_array($date, $att['uniqueDates']) && $date == $innerkey )
+                            
+                                                @if(in_array($datekey, $att['uniqueDates']) && $datekey == $innerkey )
                                                 <a href="javascript:void(0);" data-toggle="modal" data-target="#attendance_info{{$key}}{{$innerkey}}"><i class="fa fa-check text-success"></i>
                                                     @include('form.modal.attendancemodal')
-                                                    @foreach($attendancebydate as $singleKey=>$singleattendance)
-                                                        {{-- <span>{{ $singleKey }} &nbsp; {{$singleattendance}}</span> <br> --}}
-                                                      
-                                                    @endforeach
-                                                @elseif(!(in_array($date, $att['uniqueDates'])))
-
+                                                  
+                                                @elseif(!(in_array($datekey, $att['uniqueDates'])))
+                                                @if(in_array($datekey, $holidayDates))
+                                                @php
+                                                    $holidayIndex = array_search($datekey, $holidayDates);
+                                                @endphp
+                                                <span style="color: orange">{{ $holidays[$holidayIndex]['name_holiday'] }}</span>
+                                                @else
                                                 <span><i class="fa fa-close text-danger"></i></span>
+                                                  @endif
                                                 @break
                                                 @endif
 

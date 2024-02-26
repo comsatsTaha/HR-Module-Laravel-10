@@ -20,7 +20,6 @@ class HolidayController extends Controller
     {
         $request->validate([
             'nameHoliday' => 'required|string|max:255',
-            'holidayDate' => 'required|string|max:255',
         ]);
         
         DB::beginTransaction();
