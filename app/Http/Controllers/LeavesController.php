@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Attendance;
 use App\Models\AttendanceEmployee;
 use App\Models\AttendenceEmployee;
 use Illuminate\Http\Request;
@@ -162,53 +163,58 @@ class LeavesController extends Controller
         //     });
 
         $currentMonth = Carbon::now()->format('Y-m');
-
         $attendance = AttendanceEmployee::with('attendance')
-    ->get()
-    ->map(function ($employee) use ($currentMonth) {
-        $attendance_by_date = $employee->attendance
-            ->filter(function ($attendance) use ($currentMonth) {
+        ->get()
+        ->filter(function ($employee) use ($currentMonth) {
+            // Check if the employee has attendance in the current month
+            return $employee->attendance->first(function ($attendance) use ($currentMonth) {
                 return Carbon::parse($attendance->date_time)->format('Y-m') === $currentMonth;
-            })
-            ->groupBy(function ($attendance) {
-                return Carbon::parse($attendance->date_time)->format('Y-m-d');
-            })
-            ->map(function ($groupedAttendance) {
-                $checkIn = null;
-                $checkOut = null;
-
-                foreach ($groupedAttendance as $attendance) {
-                    // dd($attendance);
-                    if ($attendance->type == 0) {
-                        $checkIn = $attendance->date_time;
-                    } elseif ($attendance->type == 1) {
-                        $checkOut = $attendance->date_time;
+            }) !== null;
+        })
+        ->map(function ($employee) use ($currentMonth) {
+            // Your existing code to process attendance for each employee
+            $attendance_by_date = $employee->attendance
+                ->filter(function ($attendance) use ($currentMonth) {
+                    return Carbon::parse($attendance->date_time)->format('Y-m') === $currentMonth;
+                })
+                ->groupBy(function ($attendance) {
+                    return Carbon::parse($attendance->date_time)->format('Y-m-d');
+                })
+                ->map(function ($groupedAttendance) {
+                    $checkIn = null;
+                    $checkOut = null;
+    
+                    foreach ($groupedAttendance as $attendance) {
+                        if ($attendance->type == 0) {
+                            $checkIn = $attendance->date_time;
+                        } elseif ($attendance->type == 1) {
+                            $checkOut = $attendance->date_time;
+                        }
                     }
-                }
-
-
-                return [
-                    'check_in' => $checkIn,
-                    'check_out' => $checkOut,
-                ];
-            });
-            $uniqueDates = [];
+    
+                    return [
+                        'check_in' => $checkIn,
+                        'check_out' => $checkOut,
+                    ];
+                });
+    
             $uniqueDates = $employee->attendance
-            ->filter(function ($attendance) use ($currentMonth) {
-                return Carbon::parse($attendance->date_time)->format('Y-m') === $currentMonth;
-            })
-            ->pluck('date_time')
-            ->map(function ($dateTime) {
-                return Carbon::parse($dateTime)->format('Y-m-d');
-            })
-            ->unique()->toArray();
-            // dd($uniqueDates);
-        return [
-            'employee' => $employee,
-            'attendance_by_date' => $attendance_by_date,
-            'uniqueDates' => $uniqueDates
-        ];
-    });
+                ->filter(function ($attendance) use ($currentMonth) {
+                    return Carbon::parse($attendance->date_time)->format('Y-m') === $currentMonth;
+                })
+                ->pluck('date_time')
+                ->map(function ($dateTime) {
+                    return Carbon::parse($dateTime)->format('Y-m-d');
+                })
+                ->unique()
+                ->toArray();
+    
+            return [
+                'employee' => $employee,
+                'attendance_by_date' => $attendance_by_date,
+                'uniqueDates' => $uniqueDates
+            ];
+        });
     
     // dd($attendance);
 
@@ -225,7 +231,8 @@ class LeavesController extends Controller
         foreach ($dates as $carbonDate) {
             $datesOnly[] = $carbonDate->toDateString();
         }
-      
+
+     
 
         return view('form.attendance', compact('attendance','datesOnly'));
     }
