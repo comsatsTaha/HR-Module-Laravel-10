@@ -14,4 +14,6 @@ class AttendanceEmployee extends Model
         return $this->hasMany(Attendance::class);
     }
 
+   
+
 }

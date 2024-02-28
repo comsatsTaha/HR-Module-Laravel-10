@@ -29,13 +29,15 @@ class LeavesController extends Controller
     // save record
     public function saveRecord(Request $request)
     {
-        $request->validate([
-            'leave_type'   => 'required|string|max:255',
-            'from_date'    => 'required|string|max:255',
-            'to_date'      => 'required|string|max:255',
-            'leave_reason' => 'required|string|max:255',
-        ]);
-
+        // dd($request->all());
+        // $request->validate([
+        //     'leave_type'   => 'required|string|max:255',
+        //     'from_date'    => 'required|string|max:255',
+        //     'to_date'      => 'required|string|max:255',
+        //     'leave_reason' => 'required|string|max:255',
+        // ]);
+        $attendanceemployee = auth()->user();
+      
         DB::beginTransaction();
         try {
 
@@ -45,7 +47,7 @@ class LeavesController extends Controller
             $days    = $day->d;
 
             $leaves = new LeavesAdmin;
-            $leaves->user_id        = $request->user_id;
+            $leaves->user_id        = $attendanceemployee->user_id;
             $leaves->leave_type    = $request->leave_type;
             $leaves->from_date     = $request->from_date;
             $leaves->to_date       = $request->to_date;
@@ -113,6 +115,7 @@ class LeavesController extends Controller
     // leaveSettings
     public function leaveSettings()
     {
+       
         return view('form.leavesettings');
     }
 
@@ -174,21 +177,10 @@ class LeavesController extends Controller
         });
     
     
-    // dd($attendance);
 
         $currentMonth = Carbon::now()->startOfMonth();
         $lastDayOfMonth = Carbon::now()->endOfMonth();
 
-        // $dates = [];
-        // while ($currentMonth <= $lastDayOfMonth) {
-        //     $dates[] = $currentMonth->copy();
-        //     $currentMonth->addDay();
-        // }
-
-        // $datesOnly = [];
-        // foreach ($dates as $carbonDate) {
-        //     $datesOnly[] = $carbonDate->toDateString();
-        // }
 
                 $dates = [];
         while ($currentMonth <= $lastDayOfMonth) {
@@ -205,9 +197,11 @@ class LeavesController extends Controller
         $holidays= Holiday::all();
         $holidays= $holidays->toArray();
 
-     
+        $userLeaves = LeavesAdmin::where('user_id', auth()->user()->user_id)->get();
 
-        return view('form.attendance', compact('attendance','datesOnly','holidays'));
+     
+        $employeesnames= AttendanceEmployee::all()->pluck('name');
+        return view('form.attendance', compact('attendance','datesOnly','holidays','employeesnames','userLeaves'));
     }
 
     // attendance employee
@@ -216,10 +210,112 @@ class LeavesController extends Controller
         return view('form.attendanceemployee');
     }
 
+
+    public function searchattendance(Request $request){
+        $month = $request->input('month');
+        $year = $request->input('year');
+        $name = $request->input('name'); // Assuming name is the parameter name for the name search
+    
+        // Create a Carbon instance for the provided month and year
+        $currentMonth = Carbon::createFromDate($year, $month, 1)->format('Y-m');
+        
+        $attendanceQuery = AttendanceEmployee::with('attendance');
+    
+        // If name parameter is provided, filter by name
+        if ($name) {
+            $attendanceQuery->whereHas('attendance', function ($query) use ($name) {
+                $query->where('name', 'like', '%' . $name . '%');
+            });
+        }
+    
+        $attendance = $attendanceQuery->get()
+            ->filter(function ($employee) use ($currentMonth) {
+                // Check if the employee has attendance in the current month
+                return $employee->attendance->first(function ($attendance) use ($currentMonth) {
+                    return Carbon::parse($attendance->date_time)->format('Y-m') === $currentMonth;
+                }) !== null;
+            })
+            ->map(function ($employee) use ($currentMonth) {
+                // Your existing code to process attendance for each employee
+                $attendance_by_date = $employee->attendance
+                    ->filter(function ($attendance) use ($currentMonth) {
+                        return Carbon::parse($attendance->date_time)->format('Y-m') === $currentMonth;
+                    })
+                    ->groupBy(function ($attendance) {
+                        return Carbon::parse($attendance->date_time)->format('Y-m-d');
+                    })
+                    ->map(function ($groupedAttendance) {
+                        $firstCheckIn = null;
+                        $lastCheckOut = null;
+    
+                        foreach ($groupedAttendance as $attendance) {
+                            if ($attendance->type == 0 && ($firstCheckIn == null || $attendance->date_time < $firstCheckIn)) {
+                                $firstCheckIn = $attendance->date_time;
+                            } elseif ($attendance->type == 1 && ($lastCheckOut == null || $attendance->date_time > $lastCheckOut)) {
+                                $lastCheckOut = $attendance->date_time;
+                            }
+                        }
+    
+                        return [
+                            'check_in' => $firstCheckIn,
+                            'check_out' => $lastCheckOut,
+                        ];
+                    });
+    
+                $uniqueDates = $employee->attendance
+                    ->filter(function ($attendance) use ($currentMonth) {
+                        return Carbon::parse($attendance->date_time)->format('Y-m') === $currentMonth;
+                    })
+                    ->pluck('date_time')
+                    ->map(function ($dateTime) {
+                        return Carbon::parse($dateTime)->format('Y-m-d');
+                    })
+                    ->unique()
+                    ->toArray();
+    
+                return [
+                    'employee' => $employee,
+                    'attendance_by_date' => $attendance_by_date,
+                    'uniqueDates' => $uniqueDates
+                ];
+            });
+    
+        // Prepare the dates for the view
+        $currentMonth = Carbon::createFromDate($year, $month, 1)->startOfMonth();
+        $lastDayOfMonth = Carbon::createFromDate($year, $month, 1)->endOfMonth();
+    
+        $dates = [];
+        while ($currentMonth <= $lastDayOfMonth) {
+            $dates[] = $currentMonth->copy();
+            $currentMonth->addDay();
+        }
+    
+        $datesOnly = [];
+        foreach ($dates as $carbonDate) {
+            $datesOnly[$carbonDate->toDateString()] = $carbonDate->format('l');
+        }
+    
+        // Fetch holidays
+        $holidays = Holiday::all()->toArray();
+        $employeesnames= AttendanceEmployee::all()->pluck('name');
+        
+    
+        return view('form.attendance', compact('attendance', 'datesOnly', 'holidays','employeesnames'));
+    }
+    
+    
+    
+
     // leaves Employee
     public function leavesEmployee()
     {
-        return view('form.leavesemployee');
+        $leaves = DB::table('leaves_admins')
+        ->join('users', 'users.user_id', '=', 'leaves_admins.user_id')
+        ->select('leaves_admins.*', 'users.position', 'users.name', 'users.avatar')
+        ->where('leaves_admins.user_id', auth()->user()->user_id)
+        ->get();
+    
+        return view('form.leaves', compact('leaves'));
     }
 
     // shiftscheduling

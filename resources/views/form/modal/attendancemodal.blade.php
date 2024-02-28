@@ -124,15 +124,19 @@
                                     @endforeach
                                     @if($totalHours > 8)
                                     @php
-                                        $overtimeHours = $totalHours - 8;
-                                    @endphp
-                                    <li>
-                                        <p class="mb-0">Overtime</p>
-                                        <p class="res-activity-time" style="color: black">
-                                            <i class="fa fa-clock-o"></i>
-                                            {{ number_format($overtimeHours, 2) }} hrs & min
-                                        </p>
-                                    </li>
+                                    $overtimeHours = $totalHours - 8;
+                                    $overtimeHoursInt = floor($overtimeHours); // Extract integer part (hours)
+                                    $overtimeMinutes = ($overtimeHours - $overtimeHoursInt) * 60; // Convert remaining decimal to minutes
+                                @endphp
+                                
+                                <li>
+                                    <p class="mb-0">Overtime</p>
+                                    <p class="res-activity-time" style="color: black">
+                                        <i class="fa fa-clock-o"></i>
+                                        {{ $overtimeHoursInt }} hrs {{ round($overtimeMinutes) }} min
+                                    </p>
+                                </li>
+                                
                                     @endif
                                 </ul>
                                 

@@ -27,6 +27,9 @@
                                     </span>
                                 @enderror
                             </div>
+                          
+
+                            {{-- <img src="https://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&key=AIzaSyBO4A3PHK3lQiAZLwqa_7vkUEo4bLrGEW8" /> --}}
                             <div class="form-group">
                                 <div class="row">
                                     <div class="col">

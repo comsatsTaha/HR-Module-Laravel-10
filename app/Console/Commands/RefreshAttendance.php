@@ -29,9 +29,30 @@ class RefreshAttendance extends Command
     public function handle()
     {
         $employeeattendance= Attendance::orderBy('id','desc')->first();
-        $zk = new ZKTeco('192.168.70.32');
+        $zk = new ZKTeco('210.56.25.222');
         $zk->connect();
         $attendanceData = $zk->getAttendance();
+        $usersData = $zk->getUser();
+        $usersToCreate = [];
+        $filteredusers=[];
+        $lastemployee= AttendanceEmployee::orderBy('id','desc')->first();
+        foreach ($usersData as $user) {
+        if ($user['userid'] > $lastemployee->id) {
+            $filteredusers[] = $user;
+            }
+        }
+        foreach ($filteredusers as $userData) {
+            $usersToCreate[] = [
+                "id" => $userData['userid'],
+                "name" => $userData['name'],
+                "role" => $userData["role"],
+                "password" => $userData['password'],
+                "card_no" => $userData['cardno']
+            ];
+        }
+        if (!empty($usersToCreate)) {
+            AttendanceEmployee::insert($usersToCreate);
+        }
         
         $filteredAttendance = [];
         
@@ -54,6 +75,8 @@ class RefreshAttendance extends Command
         if($filteredAttendance != [])
              Attendance::insert($attendancetocreate);
 
+
+     
 
     }
 }

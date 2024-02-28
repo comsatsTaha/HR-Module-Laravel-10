@@ -23,4 +23,8 @@ class Employee extends Model
         'assets',
         'timing_sheets',
     ];
+
+    public function attendanceemployee(){
+        return $this->belongsTo(AttendanceEmployee::class,'attendance_employee_id');
+    }
 }

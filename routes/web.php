@@ -102,10 +102,10 @@ Route::controller(ForgotPasswordController::class)->group(function () {
 });
 
 // ----------------------------- reset password -----------------------------//
-Route::controller(ResetPasswordController::class)->group(function () {
-    Route::get('reset-password/{token}', 'getPassword');
-    Route::post('reset-password', 'updatePassword');    
-});
+// Route::controller(ResetPasswordController::class)->group(function () {
+//     Route::get('reset-password/{token}', 'getPassword');
+//     Route::post('reset-password', 'updatePassword');    
+// });
 
 // ----------------------------- user profile ------------------------------//
 Route::controller(UserManagementController::class)->group(function () {
@@ -228,6 +228,7 @@ Route::controller(LeavesController::class)->group(function () {
 // ----------------------------- form attendance  ------------------------------//
 Route::controller(LeavesController::class)->group(function () {
     Route::get('form/leavesettings/page', 'leaveSettings')->middleware('auth')->name('form/leavesettings/page');
+    Route::get('form/leavesettings/searchattendance', 'searchattendance')->middleware('auth')->name('searchattendance');
     Route::get('attendance/page', 'attendanceIndex')->middleware('auth')->name('attendance/page');
     Route::get('attendance/employee/page', 'AttendanceEmployee')->middleware('auth')->name('attendance/employee/page');
     Route::get('form/shiftscheduling/page', 'shiftScheduLing')->middleware('auth')->name('form/shiftscheduling/page');

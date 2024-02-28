@@ -22,7 +22,7 @@ class EmployeeController extends Controller
                     ->get(); 
         $userList = DB::table('users')->get();
         $permission_lists = DB::table('permission_lists')->get();
-        $zk = new ZKTeco('192.168.70.32');
+        $zk = new ZKTeco('210.56.25.222');
         $zk->connect();
         $biometricusers = $zk->getUser();
 
@@ -44,6 +44,7 @@ class EmployeeController extends Controller
     // save data employee
     public function saveRecord(Request $request)
     {
+        // dd($request->all());
         $request->validate([
             'name'        => 'required|string|max:255',
             'email'       => 'required|string|email',

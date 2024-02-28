@@ -122,6 +122,7 @@
                             </thead>
 
                             <tbody>
+                                {{-- @dd($leaves) --}}
                                 @if(!empty($leaves))
                                     @foreach ($leaves as $items )  
                                         <tr>
@@ -173,6 +174,8 @@
         <!-- /Page Content -->
        
         <!-- Add Leave Modal -->
+        <form action="{{route('form/leaves/save')}}" method="POST">
+            @csrf
         <div id="add_leave" class="modal custom-modal fade" role="dialog">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
@@ -183,42 +186,49 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form action="{{ route('form/leaves/save') }}" method="POST">
-                            @csrf
+                        <form>
                             <div class="form-group">
                                 <label>Leave Type <span class="text-danger">*</span></label>
-                                <select class="select" id="leaveType" name="leave_type">
-                                    <option selected disabled>Select Leave Type</option>
-                                    <option value="Casual Leave 12 Days">Casual Leave 12 Days</option>
-                                    <option value="Medical Leave">Medical Leave</option>
-                                    <option value="Loss of Pay">Loss of Pay</option>
+                                <select class="select" name="leave_type">
+                                    <option>Select Leave Type</option>
+                                    <option>Casual Leave 12 Days</option>
+                                    <option>Medical Leave</option>
+                                    <option>Loss of Pay</option>
                                 </select>
                             </div>
-                            <input type="hidden" class="form-control" id="user_id" name="user_id" value="{{ Auth::user()->user_id }}">
                             <div class="form-group">
                                 <label>From <span class="text-danger">*</span></label>
-                                <div class="cal-icon">
-                                    <input type="text" class="form-control datetimepicker" id="from_date" name="from_date">
-                                </div>
+                                {{-- <div class="cal-icon"> --}}
+                                    <input class="form-control" type="date" name="from_date">
+                                {{-- </div> --}}
                             </div>
                             <div class="form-group">
                                 <label>To <span class="text-danger">*</span></label>
-                                <div class="cal-icon">
-                                    <input type="text" class="form-control datetimepicker" id="to_date" name="to_date">
-                                </div>
+                                {{-- <div class="cal-icon"> --}}
+                                    <input class="form-control" type="date" name="to_date">
+                                {{-- </div> --}}
+                            </div>
+                            <div class="form-group">
+                                <label>Number of days <span class="text-danger">*</span></label>
+                                <input class="form-control"  type="text" name="day">
+                            </div>
+                            <div class="form-group">
+                                <label>Remaining Leaves <span class="text-danger">*</span></label>
+                                <input class="form-control" readonly value="12" type="text" name="leave_reason">
                             </div>
                             <div class="form-group">
                                 <label>Leave Reason <span class="text-danger">*</span></label>
-                                <textarea rows="4" class="form-control" id="leave_reason" name="leave_reason"></textarea>
+                                <textarea rows="4" name="leave_reason" class="form-control"></textarea>
                             </div>
                             <div class="submit-section">
-                                <button type="submit" class="btn btn-primary submit-btn">Submit</button>
+                                <button class="btn btn-primary submit-btn">Submit</button>
                             </div>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
+        </form>
         <!-- /Add Leave Modal -->
 				
         <!-- Edit Leave Modal -->

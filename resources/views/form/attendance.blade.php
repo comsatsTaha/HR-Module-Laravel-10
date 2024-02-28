@@ -18,52 +18,62 @@
             </div>
         </div>
         <!-- /Page Header -->
-
+        <form action="{{route('searchattendance')}}" method="GET">
         <!-- Search Filter -->
         <div class="row filter-row">
             <div class="col-sm-6 col-md-3">
                 <div class="form-group form-focus">
-                    <input type="text" class="form-control floating">
-                    <label class="focus-label">Employee Name</label>
+                    <select class="form-control" name="name">
+                        <option value="" disabled selected>Select Name</option>
+                        @foreach($employeesnames as $name)
+                        <option value="{{$name}}">{{$name}}</option>
+                        @endforeach
+                    </select>
                 </div>
             </div>
             <div class="col-sm-6 col-md-3">
                 <div class="form-group form-focus select-focus">
-                    <select class="select floating">
-                        <option>-</option>
-                        <option>Jan</option>
-                        <option>Feb</option>
-                        <option>Mar</option>
-                        <option>Apr</option>
-                        <option>May</option>
-                        <option>Jun</option>
-                        <option>Jul</option>
-                        <option>Aug</option>
-                        <option>Sep</option>
-                        <option>Oct</option>
-                        <option>Nov</option>
-                        <option>Dec</option>
+                    <select class="select floating" name="month" required>
+                        <option value="" disabled selected>-</option>
+                        <option value="1">Jan</option>
+                        <option value="2">Feb</option>
+                        <option value="3">Mar</option>
+                        <option value="4">Apr</option>
+                        <option value="5">May</option>
+                        <option value="6">Jun</option>
+                        <option value="7">Jul</option>
+                        <option value="8">Aug</option>
+                        <option value="9">Sep</option>
+                        <option value="10">Oct</option>
+                        <option value="11">Nov</option>
+                        <option value="12">Dec</option>
                     </select>
                     <label class="focus-label">Select Month</label>
                 </div>
             </div>
             <div class="col-sm-6 col-md-3">
                 <div class="form-group form-focus select-focus">
-                    <select class="select floating">
-                        <option>-</option>
-                        <option>2019</option>
-                        <option>2018</option>
-                        <option>2017</option>
-                        <option>2016</option>
-                        <option>2015</option>
+                    <select class="select floating" name="year" required>
+                        <option value="" disabled selected>-</option>
+                        <option value="2024">2024</option>
+                        <option value="2023">2023</option>
+                        <option value="2022">2022</option>
+                        <option value="2021">2021</option>
+                        <option value="2020">2020</option>
+                        <option value="2019">2019</option>
+                        <option value="2018">2018</option>
+                        <option value="2017">2017</option>
+                        <option value="2016">2016</option>
+                        <option value="2015">2015</option>
                     </select>
                     <label class="focus-label">Select Year</label>
                 </div>
             </div>
             <div class="col-sm-6 col-md-3">
-                <a href="#" class="btn btn-success btn-block"> Search </a>
+                <button type="submit" class="btn btn-success btn-block"> Search </a>
             </div>
         </div>
+    </form>
         <!-- /Search Filter -->
 
         <div class="row">
@@ -107,9 +117,15 @@
                                                     $holidayIndex = array_search($datekey, $holidayDates);
                                                 @endphp
                                                 <span style="color: orange">{{ $holidays[$holidayIndex]['name_holiday'] }}</span>
-                                                @else
+                                                @elseif(in_array($datekey, $userLeaves->pluck('from_date')->toArray()))
+                                                @foreach($userLeaves as $leave)
+                                                    @if($leave->from_date === $datekey)
+                                                        <span style="color: red">Leave - {{ $leave->leave_reason }}</span>
+                                                    @endif
+                                                @endforeach
+                                            @else
                                                 <span><i class="fa fa-close text-danger"></i></span>
-                                                  @endif
+                                            @endif
                                                 @break
                                                 @endif
 

@@ -158,6 +158,7 @@
         
 
         <!-- Add User Modal -->
+        
         <div id="add_user" class="modal custom-modal fade" role="dialog">
             <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                 <div class="modal-content">

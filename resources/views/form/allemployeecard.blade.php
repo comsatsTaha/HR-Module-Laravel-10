@@ -130,9 +130,9 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Birth Date</label>
-                                        <div class="cal-icon">
-                                            <input class="form-control datetimepicker" type="text" id="birthDate" name="birthDate">
-                                        </div>
+                                        {{-- <div class="cal-icon"> --}}
+                                            <input class="form-control" type="date" id="birthDate" name="birthDate">
+                                        {{-- </div> --}}
                                     </div>
                                 </div>
                                 <div class="col-md-6">
