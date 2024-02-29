@@ -123,7 +123,7 @@ class LeavesController extends Controller
     public function attendanceIndex()
     {
         $currentMonth = Carbon::now()->format('Y-m');
-        $attendance = AttendanceEmployee::with('attendance')
+        $attendance = AttendanceEmployee::with('attendance','employee')
         ->get()
         ->filter(function ($employee) use ($currentMonth) {
             // Check if the employee has attendance in the current month
@@ -196,8 +196,7 @@ class LeavesController extends Controller
 
         $holidays= Holiday::all();
         $holidays= $holidays->toArray();
-
-        $userLeaves = LeavesAdmin::where('user_id', auth()->user()->user_id)->get();
+        $userLeaves = LeavesAdmin::all();
 
      
         $employeesnames= AttendanceEmployee::all()->pluck('name');
@@ -299,8 +298,10 @@ class LeavesController extends Controller
         $holidays = Holiday::all()->toArray();
         $employeesnames= AttendanceEmployee::all()->pluck('name');
         
+        $userLeaves = LeavesAdmin::all();
+
     
-        return view('form.attendance', compact('attendance', 'datesOnly', 'holidays','employeesnames'));
+        return view('form.attendance', compact('attendance', 'datesOnly', 'holidays','employeesnames','userLeaves'));
     }
     
     

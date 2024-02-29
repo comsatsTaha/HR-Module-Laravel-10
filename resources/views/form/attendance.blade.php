@@ -92,6 +92,7 @@
                         </thead>
                         <tbody>
                             @foreach($attendance as $key=> $att)
+
                                 <tr>
                                     <td>
                                         <h2 class="table-avatar">
@@ -119,9 +120,13 @@
                                                 <span style="color: orange">{{ $holidays[$holidayIndex]['name_holiday'] }}</span>
                                                 @elseif(in_array($datekey, $userLeaves->pluck('from_date')->toArray()))
                                                 @foreach($userLeaves as $leave)
-                                                    @if($leave->from_date === $datekey)
-                                                        <span style="color: red">Leave - {{ $leave->leave_reason }}</span>
-                                                    @endif
+                                                        @if($leave->from_date === $datekey && $att['employee']->employee && $leave->user_id == $att['employee']->employee->employee_id)
+                                                                <span style="color: red">Leave - {{ $leave->leave_reason }}</span>
+                                                          
+
+                                                        @elseif($leave->from_date === $datekey)
+                                                            <span><i class="fa fa-close text-danger"></i></span>
+                                                        @endif
                                                 @endforeach
                                             @else
                                                 <span><i class="fa fa-close text-danger"></i></span>
