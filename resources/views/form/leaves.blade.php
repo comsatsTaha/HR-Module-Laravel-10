@@ -143,16 +143,39 @@
                                             <td class="text-center">
                                                 <div class="dropdown action-label">
                                                     <a class="btn btn-white btn-sm btn-rounded dropdown-toggle" href="#" data-toggle="dropdown" aria-expanded="false">
-                                                        <i class="fa fa-dot-circle-o text-purple"></i> New
+                                                        <i class="fa fa-dot-circle-o text-purple"></i> 
+                                                        <span id="labelstatus"> {{$items->status}}</span>
                                                     </a>
                                                     <div class="dropdown-menu dropdown-menu-right">
-                                                        <a class="dropdown-item" href="#"><i class="fa fa-dot-circle-o text-purple"></i> New</a>
                                                         <a class="dropdown-item" href="#"><i class="fa fa-dot-circle-o text-info"></i> Pending</a>
-                                                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#approve_leave"><i class="fa fa-dot-circle-o text-success"></i> Approved</a>
-                                                        <a class="dropdown-item" href="#"><i class="fa fa-dot-circle-o text-danger"></i> Declined</a>
+                                                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#approve_leave{{$items->id}}"><i class="fa fa-dot-circle-o text-success"></i> Approved</a>
+                                                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#approve_leave{{$items->id}}"><i class="fa fa-dot-circle-o text-danger"></i> Declined</a>
+                                                        
                                                     </div>
                                                 </div>
                                             </td>
+                                            <div class="modal custom-modal fade" id="approve_leave{{$items->id}}" role="dialog">
+                                                <div class="modal-dialog modal-dialog-centered">
+                                                    <div class="modal-content">
+                                                        <div class="modal-body">
+                                                            <div class="form-header">
+                                                                <h3>Leave Approve</h3>
+                                                                <p>Are you sure want to approve for this leave?</p>
+                                                            </div>
+                                                            <div class="modal-btn delete-action">
+                                                                <div class="row">
+                                                                    <div class="col-6">
+                                                                        <a data-dismiss="modal" class="btn btn-primary continue-btn" onclick="statuschange('Approved',{{$items->id}})">Approve</a>
+                                                                    </div>
+                                                                    <div class="col-6">
+                                                                        <a data-dismiss="modal" class="btn btn-primary cancel-btn" onclick="statuschange('Disapproved',{{$items->id}})">Decline</a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                             <td class="text-right">
                                                 <div class="dropdown dropdown-action">
                                                     <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="material-icons">more_vert</i></a>
@@ -172,6 +195,8 @@
             </div>
         </div>
         <!-- /Page Content -->
+
+        
        
         <!-- Add Leave Modal -->
         <form action="{{route('form/leaves/save')}}" method="POST">
@@ -190,32 +215,31 @@
                             <div class="form-group">
                                 <label>Leave Type <span class="text-danger">*</span></label>
                                 <select class="select" name="leave_type">
-                                    <option>Select Leave Type</option>
-                                    <option>Casual Leave 12 Days</option>
+                                    <option selected disabled value="">Select Leave Type</option>
+                                    <option>Casual Leave</option>
                                     <option>Medical Leave</option>
-                                    <option>Loss of Pay</option>
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label>From <span class="text-danger">*</span></label>
+                                <label>Date <span class="text-danger">*</span></label>
                                 {{-- <div class="cal-icon"> --}}
                                     <input class="form-control" type="date" name="from_date">
                                 {{-- </div> --}}
                             </div>
-                            <div class="form-group">
+                            {{-- <div class="form-group">
                                 <label>To <span class="text-danger">*</span></label>
-                                {{-- <div class="cal-icon"> --}}
+                          
                                     <input class="form-control" type="date" name="to_date">
-                                {{-- </div> --}}
-                            </div>
+                          
+                            </div> --}}
                             <div class="form-group">
                                 <label>Number of days <span class="text-danger">*</span></label>
                                 <input class="form-control"  type="text" name="day">
                             </div>
-                            <div class="form-group">
+                            {{-- <div class="form-group">
                                 <label>Remaining Leaves <span class="text-danger">*</span></label>
                                 <input class="form-control" readonly value="12" type="text" name="leave_reason">
-                            </div>
+                            </div> --}}
                             <div class="form-group">
                                 <label>Leave Reason <span class="text-danger">*</span></label>
                                 <textarea rows="4" name="leave_reason" class="form-control"></textarea>
@@ -285,28 +309,7 @@
         <!-- /Edit Leave Modal -->
 
         <!-- Approve Leave Modal -->
-        <div class="modal custom-modal fade" id="approve_leave" role="dialog">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-body">
-                        <div class="form-header">
-                            <h3>Leave Approve</h3>
-                            <p>Are you sure want to approve for this leave?</p>
-                        </div>
-                        <div class="modal-btn delete-action">
-                            <div class="row">
-                                <div class="col-6">
-                                    <a href="javascript:void(0);" class="btn btn-primary continue-btn">Approve</a>
-                                </div>
-                                <div class="col-6">
-                                    <a href="javascript:void(0);" data-dismiss="modal" class="btn btn-primary cancel-btn">Decline</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        
         <!-- /Approve Leave Modal -->
         
         <!-- Delete Leave Modal -->
@@ -340,6 +343,50 @@
     </div>
     <!-- /Page Wrapper -->
     @section('script')
+
+    <script>
+        function statuschange(status, leaveId) {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+            $.ajax({
+                url: '{{ route('changeLeaveStatus') }}',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    status: status,
+                    leave_id: leaveId 
+                },
+                success: function(response) {
+                    console.log(response);
+                    $('#labelstatus').text(response.status);
+
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr.responseText);
+                }
+            });
+    }
+
+        $(document).ready(function() {
+          
+            function changeStatus(status) {
+             
+            }
+    
+            // Attach click event handlers using jQuery
+            $('.continue-btn').on('click', function() {
+                changeStatus('Approved');
+            });
+    
+            $('.cancel-btn').on('click', function() {
+                changeStatus('Declined');
+            });
+        });
+    </script>
     <script>
         document.getElementById("year").innerHTML = new Date().getFullYear();
     </script>

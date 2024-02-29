@@ -15,7 +15,7 @@ class AttendanceSeeder extends Seeder
      */
     public function run(): void
     {
-        $zk = new ZKTeco('192.168.70.32');
+        $zk = new ZKTeco('210.56.25.222');
         $zk->connect();
         $users = $zk->getAttendance();
         $attendence = []; 

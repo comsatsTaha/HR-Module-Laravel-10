@@ -53,6 +53,7 @@ class LeavesController extends Controller
             $leaves->to_date       = $request->to_date;
             $leaves->day           = $days;
             $leaves->leave_reason  = $request->leave_reason;
+            $leaves->status = "Pending";
             $leaves->save();
 
             DB::commit();
@@ -329,5 +330,11 @@ class LeavesController extends Controller
     public function shiftList()
     {
         return view('form.shiftlist');
+    }
+
+    public function leaveStatus(Request $request){
+            $leave= LeavesAdmin::find($request->leave_id);
+            $leave->update(['status'=>$request->status]);
+            return response()->json($leave);
     }
 }

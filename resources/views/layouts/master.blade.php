@@ -32,6 +32,8 @@
 	<link rel="stylesheet" href="{{ URL::to('assets/css/toastr.min.css') }}">
 	<script src="{{ URL::to('assets/js/toastr_jquery.min.js') }}"></script>
 	<script src="{{ URL::to('assets/js/toastr.min.js') }}"></script>
+	<meta name="csrf-token" content="{{ csrf_token() }}">
+
 </head>
 
 <body>
