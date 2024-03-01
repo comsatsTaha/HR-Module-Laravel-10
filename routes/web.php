@@ -206,7 +206,9 @@ Route::controller(EmployeeController::class)->group(function () {
 
 // ----------------------------- profile employee ------------------------------//
 Route::controller(EmployeeController::class)->group(function () {
-    Route::get('employee/profile/{user_id}', 'profileEmployee')->middleware('auth');
+    Route::get('employee/profile/{user_id}', 'profileEmployee')->middleware('auth')->name('employee/profile');
+    Route::get('attendanceemployee/profile/{user_id}', 'attendanceemployee')->middleware('auth')->name('attendanceemployee/profile');
+
 });
 
 // ----------------------------- form holiday ------------------------------//

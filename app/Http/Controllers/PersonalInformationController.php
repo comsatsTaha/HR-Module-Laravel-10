@@ -12,6 +12,7 @@ class PersonalInformationController extends Controller
     /** save record */
     public function saveRecord(Request $request)
     {
+        // dd($request->all());
         $request->validate([
             'passport_no'          => 'required|string|max:255',
             'passport_expiry_date' => 'required|string|max:255',

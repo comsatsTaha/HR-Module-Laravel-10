@@ -98,7 +98,9 @@
                                         <h2 class="table-avatar">
                                             <a class="avatar avatar-xs" href="profile.html"><img alt=""
                                                     src="{{ URL::to('assets/img/profiles/avatar-09.jpg') }}"></a>
-                                            <a href="profile.html">{{$att['employee']['name']}}</a>
+                                                    <a href="{{ route('attendanceemployee/profile', ['user_id' => $att['employee']['id']]) }}">
+                                                        {{$att['employee']['name']}}
+                                                    </a>
                                         </h2>
                                     </td>
                                     @php

@@ -25,53 +25,55 @@
                             <div class="profile-view">
                                 <div class="profile-img-wrap">
                                     <div class="profile-img">
-                                        <a href="#"><img alt="" src="{{ URL::to('/assets/images/'. $user[0]->avatar) }}" alt="{{ $user[0]->name }}"></a>
+                                        {{-- <a href="#"><img alt="" src="{{ URL::to('/assets/images/'. $user->avatar) }}" alt="{{ $user->name }}"></a> --}}
                                     </div>
                                 </div>
                                 <div class="profile-basic">
                                     <div class="row">
                                         <div class="col-md-5">
                                             <div class="profile-info-left">
-                                                <h3 class="user-name m-t-0 mb-0">{{ $user[0]->name }}</h3>
-                                                <h6 class="text-muted"> {{ $user[0]->department }}</h6>
-                                                <small class="text-muted">{{ $user[0]->position }}</small>
-                                                <div class="staff-id">Employee ID : {{ $user[0]->user_id }}</div>
-                                                <div class="small doj text-muted">Date of Join : {{ $user[0]->join_date }}</div>
-                                                <div class="staff-msg"><a class="btn btn-custom" href="chat.html">Send Message</a></div>
+                                                <h3 class="user-name m-t-0 mb-0">{{ $user->name }}</h3>
+                                                <h6 class="text-muted"> {{ $user->department }}</h6>
+                                                <small class="text-muted">{{ $user->position }}</small>
+                                                <div class="staff-id">Employee ID : {{ $user->user_id }}</div>
+                                                <div class="small doj text-muted">Date of Join : {{ $user->join_date }}</div>
+                                                {{-- <div class="staff-msg"><a class="btn btn-custom" href="chat.html">Send Message</a></div> --}}
                                             </div>
                                         </div>
                                         <div class="col-md-7">
                                             <ul class="personal-info">
                                                 <li>
                                                     <div class="title">Phone:</div>
-                                                    <div class="text"><a href="">{{ $user[0]->phone_number }}</a></div>
+                                                     @if(!empty($user->profileInformation))
+                                                    <div class="text"><a href="">{{ $user->profileInformation->phone_number }}</a></div>
+                                                    @endif
                                                 </li>
                                                 <li>
                                                     <div class="title">Email:</div>
-                                                    <div class="text"><a href="">{{ $user[0]->email }}</a></div>
+                                                    <div class="text"><a href="">{{ $user->email }}</a></div>
                                                 </li>
                                                 <li>
-                                                    @if(!empty($users))
+                                                    @if(!empty($user->profileInformation))
                                                         <div class="title">Birthday:</div>
-                                                        <div class="text">{{ $users->birth_date }}</div>
+                                                        <div class="text">{{ $user->profileInformation->birth_date }}</div>
                                                     @else
                                                         <div class="title">Birthday:</div>
                                                         <div class="text">N/A</div>
                                                     @endif
                                                 </li>
                                                 <li>
-                                                    @if(!empty($users))
+                                                    @if(!empty($user->profileInformation))
                                                         <div class="title">Address:</div>
-                                                        <div class="text">{{ $users->address }}</div>
+                                                        <div class="text">{{ $user->profileInformation->address }}</div>
                                                     @else
                                                         <div class="title">Address:</div>
                                                         <div class="text">N/A</div>
                                                     @endif
                                                 </li>
                                                 <li>
-                                                    @if(!empty($users))
+                                                    @if(!empty($user->profileInformation))
                                                         <div class="title">Gender:</div>
-                                                        <div class="text">{{ $users->gender }}</div>
+                                                        <div class="text">{{ $user->profileInformation->gender }}</div>
                                                     @else
                                                         <div class="title">Gender:</div>
                                                         <div class="text">N/A</div>
@@ -82,11 +84,11 @@
                                                     <div class="text">
                                                         <div class="avatar-box">
                                                             <div class="avatar avatar-xs">
-                                                                <img src="{{ URL::to('/assets/images/'. $user[0]->avatar) }}" alt="{{ $user[0]->name }}">
+                                                                <img src="{{ URL::to('/assets/images/'. $user->avatar) }}" alt="{{ $user->name }}">
                                                             </div>
                                                         </div>
-                                                        <a href="profile.html">
-                                                            {{ $user[0]->name }}
+                                                        <a href="{{ route('employee/profile', ['user_id' => $user->user_id]) }}">
+                                                            {{ $user->name }}
                                                         </a>
                                                     </div>
                                                 </li> 
@@ -106,13 +108,14 @@
                     <div class="col-lg-12 col-md-12 col-sm-12 line-tabs">
                         <ul class="nav nav-tabs nav-tabs-bottom">
                             <li class="nav-item"><a href="#emp_profile" data-toggle="tab" class="nav-link active">Profile</a></li>
-                            <li class="nav-item"><a href="#emp_projects" data-toggle="tab" class="nav-link">Projects</a></li>
-                            <li class="nav-item"><a href="#bank_statutory" data-toggle="tab" class="nav-link">Bank & Statutory <small class="text-danger">(Admin Only)</small></a></li>
+                            {{-- <li class="nav-item"><a href="#emp_projects" data-toggle="tab" class="nav-link">Projects</a></li>
+                            <li class="nav-item"><a href="#bank_statutory" data-toggle="tab" class="nav-link">Bank & Statutory <small class="text-danger">(Admin Only)</small></a></li> --}}
                         </ul>
                     </div>
                 </div>
             </div>
             
+
             <div class="tab-content">
                 <!-- Profile Info Tab -->
                 <div id="emp_profile" class="pro-overview tab-pane fade show active">
@@ -124,35 +127,51 @@
                                     <ul class="personal-info">
                                         <li>
                                             <div class="title">Passport No.</div>
-                                            <div class="text">{{ $users->passport_no }}</div>
+                                             @if(!empty($user->personalInformation))
+                                            <div class="text">{{ $user->personalInformation->passport_no }}</div>
+                                            @endif
                                         </li>
                                         <li>
                                             <div class="title">Passport Exp Date.</div>
-                                            <div class="text">{{ $users->passport_expiry_date }}</div>
+                                            @if(!empty($user->personalInformation))
+                                            <div class="text">{{ $user->personalInformation->passport_expiry_date }}</div>
+                                            @endif
                                         </li>
                                         <li>
                                             <div class="title">Tel</div>
-                                            <div class="text"><a href="">{{ $users->tel }}</a></div>
+                                            @if(!empty($user->personalInformation))
+                                            <div class="text"><a href="">{{ $user->personalInformation->tel }}</a></div>
+                                            @endif
                                         </li>
                                         <li>
                                             <div class="title">Nationality</div>
-                                            <div class="text">{{ $users->nationality }}</div>
+                                            @if(!empty($user->personalInformation))
+                                            <div class="text">{{ $user->personalInformation->nationality }}</div>
+                                            @endif
                                         </li>
                                         <li>
                                             <div class="title">Religion</div>
-                                            <div class="text">{{ $users->religion }}</div>
+                                            @if(!empty($user->personalInformation))
+                                            <div class="text">{{ $user->personalInformation->religion }}</div>
+                                            @endif
                                         </li>
                                         <li>
                                             <div class="title">Marital status</div>
-                                            <div class="text">{{ $users->marital_status }}</div>
+                                            @if(!empty($user->personalInformation))
+                                            <div class="text">{{ $user->personalInformation->marital_status }}</div>
+                                            @endif
                                         </li>
                                         <li>
                                             <div class="title">Employment of spouse</div>
-                                            <div class="text">{{ $users->employment_of_spouse }}</div>
+                                            @if(!empty($user->personalInformation))
+                                            <div class="text">{{ $user->personalInformation->employment_of_spouse }}</div>
+                                            @endif
                                         </li>
                                         <li>
                                             <div class="title">No. of children</div>
-                                            <div class="text">{{ $users->children }}</div>
+                                            @if(!empty($user->personalInformation))
+                                            <div class="text">{{ $user->personalInformation->children }}</div>
+                                            @endif
                                         </li>
                                     </ul>
                                 </div>
@@ -834,12 +853,12 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="profile-img-wrap edit-img">
-                                        <img class="inline-block" src="{{ URL::to('/assets/images/'. $user[0]->avatar) }}" alt="{{ $user[0]->name }}">
+                                        <img class="inline-block" src="{{ URL::to('/assets/images/'. $user->avatar) }}" alt="{{ $user->name }}">
                                         <div class="fileupload btn">
                                             <span class="btn-text">edit</span>
                                             <input class="upload" type="file" id="image" name="images">
-                                            @if(!empty($users))
-                                            <input type="hidden" name="hidden_image" id="e_image" value="{{ $user[0]->avatar }}">
+                                            @if(!empty($user))
+                                            <input type="hidden" name="hidden_image" id="e_image" value="{{ $user->avatar }}">
                                             @endif
                                         </div>
                                     </div>
@@ -847,29 +866,29 @@
                                         <div class="col-md-12">
                                             <div class="form-group">
                                                 <label>Full Name</label>
-                                                <input type="text" class="form-control" id="name" name="name" value="{{ $user[0]->name }}">
-                                                <input type="text" class="form-control" id="user_id" name="user_id" value="{{ $user[0]->user_id }}">
-                                                <input type="hidden" class="form-control" id="email" name="email" value="{{ $user[0]->email }}">
+                                                <input type="text" class="form-control" id="name" name="name" value="{{ $user->name }}">
+                                                <input type="text" class="form-control" id="user_id" name="user_id" value="{{ $user->user_id }}">
+                                                <input type="hidden" class="form-control" id="email" name="email" value="{{ $user->email }}">
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label>Birth Date</label>
-                                                <div class="cal-icon">
-                                                    @if(!empty($users))
-                                                        <input class="form-control datetimepicker" type="text" id="birthDate" name="birthDate" value="{{ $users->birth_date }}">
+                                                {{-- <div class="cal-icon"> --}}
+                                                    @if(!empty($user->profileInformation))
+                                                        <input class="form-control" type="date" id="birthDate" name="birthDate" value="{{ $user->profileInformation->birth_date }}">
                                                     @else
-                                                        <input class="form-control datetimepicker" type="text" id="birthDate" name="birthDate">
+                                                        <input class="form-control" type="date" id="birthDate" name="birthDate">
                                                     @endif
-                                                </div>
+                                                {{-- </div> --}}
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label>Gender</label>
                                                 <select class="select form-control" id="gender" name="gender">
-                                                    @if(!empty($users))
-                                                        <option value="{{ $users->gender }}" {{ ( $users->gender == $users->gender) ? 'selected' : '' }}>{{ $users->gender }} </option>
+                                                    @if(!empty($user->profileInformation))
+                                                        <option value="{{ $user->profileInformation->gender }}" {{ ( $user->profileInformation->gender == $user->profileInformation->gender) ? 'selected' : '' }}>{{ $user->profileInformation->gender }} </option>
                                                         <option value="Male">Male</option>
                                                         <option value="Female">Female</option>
                                                     @else
@@ -886,8 +905,8 @@
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label>Address</label>
-                                        @if(!empty($users))
-                                            <input type="text" class="form-control" id="address" name="address" value="{{ $users->address }}">
+                                        @if(!empty($user->profileInformation))
+                                            <input type="text" class="form-control" id="address" name="address" value="{{ $user->profileInformation->address }}">
                                         @else
                                             <input type="text" class="form-control" id="address" name="address">
                                         @endif
@@ -896,8 +915,8 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>State</label>
-                                        @if(!empty($users))
-                                            <input type="text" class="form-control" id="state" name="state" value="{{ $users->state }}">
+                                        @if(!empty($user->profileInformation))
+                                            <input type="text" class="form-control" id="state" name="state" value="{{ $user->profileInformation->state }}">
                                         @else
                                             <input type="text" class="form-control" id="state" name="state">
                                         @endif
@@ -906,8 +925,8 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Country</label>
-                                        @if(!empty($users))
-                                            <input type="text" class="form-control" id="" name="country" value="{{ $users->country }}">
+                                        @if(!empty($user->profileInformation))
+                                            <input type="text" class="form-control" id="" name="country" value="{{ $user->profileInformation->country }}">
                                         @else
                                             <input type="text" class="form-control" id="" name="country">
                                         @endif
@@ -916,8 +935,8 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Pin Code</label>
-                                        @if(!empty($users))
-                                            <input type="text" class="form-control" id="pin_code" name="pin_code" value="{{ $users->pin_code }}">
+                                        @if(!empty($user->profileInformation))
+                                            <input type="text" class="form-control" id="pin_code" name="pin_code" value="{{ $user->profileInformation->pin_code }}">
                                         @else
                                             <input type="text" class="form-control" id="pin_code" name="pin_code">
                                         @endif
@@ -926,8 +945,8 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Phone Number</label>
-                                        @if(!empty($users))
-                                            <input type="text" class="form-control" id="phoneNumber" name="phone_number" value="{{ $users->phone_number }}">
+                                        @if(!empty($user->profileInformation))
+                                            <input type="text" class="form-control" id="phoneNumber" name="phone_number" value="{{ $user->profileInformation->phone_number }}">
                                         @else
                                             <input type="text" class="form-control" id="phoneNumber" name="phone_number">
                                         @endif
@@ -938,8 +957,8 @@
                                     <div class="form-group">
                                         <label>Department <span class="text-danger">*</span></label>
                                         <select class="select" id="department" name="department">
-                                            @if(!empty($users))
-                                                <option value="{{ $users->department }}" {{ ( $users->department == $users->department) ? 'selected' : '' }}>{{ $users->department }} </option>
+                                            @if(!empty($user->profileInformation))
+                                                <option value="{{ $user->profileInformation->department }}" {{ ( $user->profileInformation->department == $user->profileInformation->department) ? 'selected' : '' }}>{{ $user->profileInformation->department }} </option>
                                                 <option value="Web Development">Web Development</option>
                                                 <option value="IT Management">IT Management</option>
                                                 <option value="Marketing">Marketing</option>
@@ -955,8 +974,8 @@
                                     <div class="form-group">
                                         <label>Designation <span class="text-danger">*</span></label>
                                         <select class="select" id="designation" name="designation">
-                                            @if(!empty($users))
-                                                <option value="{{ $users->designation }}" {{ ( $users->designation == $users->designation) ? 'selected' : '' }}>{{ $users->designation }} </option>
+                                            @if(!empty($user->profileInformation))
+                                                <option value="{{ $user->profileInformation->designation }}" {{ ( $user->profileInformation->designation == $user->profileInformation->designation) ? 'selected' : '' }}>{{ $user->profileInformation->designation }} </option>
                                                 <option value="Web Designer">Web Designer</option>
                                                 <option value="Web Developer">Web Developer</option>
                                                 <option value="Android Developer">Android Developer</option>
@@ -972,14 +991,14 @@
                                     <div class="form-group">
                                         <label>Reports To <span class="text-danger">*</span></label>
                                         <select class="select" id="" name="reports_to">
-                                            @if(!empty($users))
-                                                <option value="{{ $users->reports_to }}" {{ ( $users->reports_to == $users->reports_to) ? 'selected' : '' }}>{{ $users->reports_to }} </option>
-                                                    @foreach ($user as $users )
-                                                    <option value="{{ $users->name }}">{{ $users->name }}</option>
+                                            @if(!empty($user->profileInformation))
+                                                <option value="{{ $user->profileInformation->reports_to }}" {{ ( $user->profileInformation->reports_to == $user->profileInformation->reports_to) ? 'selected' : '' }}>{{ $user->profileInformation->reports_to }} </option>
+                                                    @foreach ($users as $user )
+                                                    <option value="{{ $user->name }}">{{ $user->name }}</option>
                                                 @endforeach
                                             @else
-                                                @foreach ($user as $users )
-                                                    <option value="{{ $users->name }}">{{ $users->name }}</option>
+                                                @foreach ($users as $user )
+                                                    <option value="{{ $user->name }}">{{ $user->name }}</option>
                                                 @endforeach
                                             @endif
                                         </select>
@@ -997,6 +1016,8 @@
         <!-- /Profile Modal -->
     
         <!-- Personal Info Modal -->
+        <form action="{{route('user/information/save')}}" method="POST">
+
         <div id="personal_info_modal" class="modal custom-modal fade" role="dialog">
             <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                 <div class="modal-content">
@@ -1009,39 +1030,41 @@
                     <div class="modal-body">
                         <form action="{{ route('user/information/save') }}" method="POST">
                             @csrf
-                            <input type="hidden" class="form-control" name="user_id" value="{{ $users->user_id }}" readonly>
+                            <input type="hidden" class="form-control" name="user_id" value="{{ $user->user_id }}" readonly>
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Passport No</label>
-                                        <input type="text" class="form-control @error('passport_no') is-invalid @enderror" name="passport_no" value="{{ $users->passport_no }}">
+
+                                        <input type="text" class="form-control @error('passport_no') is-invalid @enderror" name="passport_no" value="{{ $user->personalInformation->passport_no ?? '' }}">
+                                 
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Passport Expiry Date</label>
-                                        <div class="cal-icon">
-                                            <input class="form-control datetimepicker @error('passport_expiry_date') is-invalid @enderror" type="text" name="passport_expiry_date" value="{{ $users->passport_expiry_date }}">
-                                        </div>
+                                        {{-- <div class="cal-icon"> --}}
+                                            <input class="form-control  @error('passport_expiry_date') is-invalid @enderror" type="date" name="passport_expiry_date" value="{{ $user->personalInformation->passport_expiry_date ?? '' }}">
+                                        {{-- </div> --}}
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Tel</label>
-                                        <input class="form-control @error('tel') is-invalid @enderror" type="text" name="tel" value="{{ $users->tel }}">
+                                        <input class="form-control @error('tel') is-invalid @enderror" type="text" name="tel" value="{{ $user->personalInformation->tel ?? '' }}">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Nationality <span class="text-danger">*</span></label>
-                                        <input class="form-control @error('nationality') is-invalid @enderror" type="text" name="nationality" value="{{ $users->nationality }}">
+                                        <input class="form-control @error('nationality') is-invalid @enderror" type="text" name="nationality" value="{{ $user->personalInformation->nationality ?? '' }}">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Religion</label>
                                         <div class="form-group">
-                                            <input class="form-control @error('religion') is-invalid @enderror" type="text" name="religion" value="{{ $users->religion }}">
+                                            <input class="form-control @error('religion') is-invalid @enderror" type="text" name="religion" value="{{ $user->personalInformation->religion ?? '' }}">
                                         </div>
                                     </div>
                                 </div>
@@ -1049,22 +1072,26 @@
                                     <div class="form-group">
                                         <label>Marital status <span class="text-danger">*</span></label>
                                         <select class="select form-control @error('marital_status') is-invalid @enderror" name="marital_status">
-                                            <option value="{{ $users->marital_status }}" {{ ( $users->marital_status == $users->marital_status) ? 'selected' : '' }}> {{ $users->marital_status }} </option>
+                                            @if($user->personalInformation)
+                                                <option value="{{ $user->personalInformation->marital_status ?? '' }}" {{ optional($user->personalInformation)->marital_status == $user->personalInformation->marital_status ? 'selected' : '' }}> {{ $user->personalInformation->marital_status ?? '' }} </option>
+                                            @endif
                                             <option value="Single">Single</option>
                                             <option value="Married">Married</option>
                                         </select>
+                                        
+                                        
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Employment of spouse</label>
-                                        <input class="form-control @error('employment_of_spouse') is-invalid @enderror" type="text" name="employment_of_spouse" value="{{ $users->employment_of_spouse }}">
+                                        <input class="form-control @error('employment_of_spouse') is-invalid @enderror" type="text" name="employment_of_spouse" value="{{ $user->personalInformation->employment_of_spouse ?? '' }}">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>No. of children </label>
-                                        <input class="form-control @error('children') is-invalid @enderror" type="text" name="children" value="{{ $users->children }}">
+                                        <input class="form-control @error('children') is-invalid @enderror" type="text" name="children" value="{{ $user->personalInformation->children ?? '' }}">
                                     </div>
                                 </div>
                             </div>
@@ -1076,6 +1103,7 @@
                 </div>
             </div>
         </div>
+        </form>
         <!-- /Personal Info Modal -->
         
         <!-- Family Info Modal -->

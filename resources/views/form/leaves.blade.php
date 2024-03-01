@@ -199,12 +199,14 @@
                                     <option>Medical Leave</option>
                                 </select>
                             </div>
+                          
                             <div class="form-group">
-                                <label>Date <span class="text-danger">*</span></label>
+                                <label>Dates <span class="text-danger">*</span></label>
                                 {{-- <div class="cal-icon"> --}}
-                                    <input class="form-control" type="date" name="from_date">
+                                    <input class="form-control" type="date"  name="from_date">
                                 {{-- </div> --}}
                             </div>
+
                             {{-- <div class="form-group">
                                 <label>To <span class="text-danger">*</span></label>
                           

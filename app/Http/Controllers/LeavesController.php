@@ -201,6 +201,7 @@ class LeavesController extends Controller
 
      
         $employeesnames= AttendanceEmployee::all()->pluck('name');
+      
         return view('form.attendance', compact('attendance','datesOnly','holidays','employeesnames','userLeaves'));
     }
 

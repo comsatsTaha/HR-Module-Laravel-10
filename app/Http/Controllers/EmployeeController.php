@@ -349,17 +349,32 @@ class EmployeeController extends Controller
     // employee profile with all controller user
     public function profileEmployee($user_id)
     {
-        $users = DB::table('users')
-                ->leftJoin('personal_information','personal_information.user_id','users.user_id')
-                ->leftJoin('profile_information','profile_information.user_id','users.user_id')
-                ->where('users.user_id',$user_id)
-                ->first();
-        $user = DB::table('users')
-                ->leftJoin('personal_information','personal_information.user_id','users.user_id')
-                ->leftJoin('profile_information','profile_information.user_id','users.user_id')
-                ->where('users.user_id',$user_id)
-                ->get(); 
+        // $users = DB::table('users')
+        //         ->leftJoin('personal_information','personal_information.user_id','users.user_id')
+        //         ->leftJoin('profile_information','profile_information.user_id','users.user_id')
+        //         ->where('users.user_id',$user_id)
+        //         ->first();
+
+        $users= User::with('personalInformation','profileInformation')->where('user_id',$user_id)->get();
+        // dd($users);
+        // $user = DB::table('users')
+        //         ->leftJoin('personal_information','personal_information.user_id','users.user_id')
+        //         ->leftJoin('profile_information','profile_information.user_id','users.user_id')
+        //         ->where('users.user_id',$user_id)
+        //         ->get(); 
+        $user= User::with('personalInformation','profileInformation')->where('user_id',$user_id)->first();
+        // dd($user);
         return view('form.employeeprofile',compact('user','users'));
+    }
+
+    public function attendanceemployee($user_id){
+        $employee= Employee::where('attendance_employee_id',$user_id)->first();
+        // dd($employee);
+        $users= User::with('personalInformation','profileInformation')->where('user_id',$employee->employee_id)->get();
+    //    dd($users);
+        $user= User::with('personalInformation','profileInformation')->where('user_id',$employee->employee_id)->first();
+        // dd($user);
+        return view('form.employeeprofile',compact('user','users')); 
     }
 
     /** page departments */

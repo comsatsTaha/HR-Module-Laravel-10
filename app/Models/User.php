@@ -55,4 +55,12 @@ class User extends Authenticatable
     public function employee(){
         return $this->hasOne(Employee::class,'employee_id','user_id');
     }
+
+    public function personalInformation(){
+        return $this->hasOne(PersonalInformation::class,'user_id','user_id');
+    }
+
+    public function profileInformation(){
+        return $this->hasOne(ProfileInformation::class,'user_id','user_id');
+    }
 }
