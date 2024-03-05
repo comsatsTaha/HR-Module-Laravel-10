@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Attendance;
+use App\Models\AttendanceEmployee;
 use Illuminate\Http\Request;
 use DB;
 use Brian2694\Toastr\Facades\Toastr;
@@ -369,11 +371,8 @@ class EmployeeController extends Controller
 
     public function attendanceemployee($user_id){
         $employee= Employee::where('attendance_employee_id',$user_id)->first();
-        // dd($employee);
         $users= User::with('personalInformation','profileInformation')->where('user_id',$employee->employee_id)->get();
-    //    dd($users);
         $user= User::with('personalInformation','profileInformation')->where('user_id',$employee->employee_id)->first();
-        // dd($user);
         return view('form.employeeprofile',compact('user','users')); 
     }
 
@@ -471,6 +470,33 @@ class EmployeeController extends Controller
     public function overTimeIndex()
     {
         return view('form.overtime');
+    }
+
+    public function saveattendance(Request $request){
+        // dd($request->all());
+        foreach($request->date as $key=>$date){
+            if($key== 0){
+                Attendance::create([
+                    'attendance_employee_id' =>$request->attendance_employee_id,
+                    'date_time'=> $date,
+                    'reason'=>$request->reason,
+                    'state'=>"1",
+                    'type'=> "0"
+                ]);
+            }
+            else{
+                Attendance::create([
+                    'attendance_employee_id' =>$request->attendance_employee_id,
+                    'date_time'=> $date,
+                    'reason'=>$request->reason,
+                    'state'=>"1",
+                    'type'=> "1"
+                ]);
+            }
+
+        }
+        return redirect()->back();
+
     }
 
 }

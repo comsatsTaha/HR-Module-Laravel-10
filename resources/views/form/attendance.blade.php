@@ -13,10 +13,81 @@
                     <ul class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ route('home') }}">Dashboard</a></li>
                         <li class="breadcrumb-item active">Attendance</li>
+                        <div class="col-auto float-right ml-auto">
+                            <a href="#" class="btn add-btn" data-toggle="modal" data-target="#add_employee"><i class="fa fa-plus"></i> Add Attendance</a>
+                            
+                        </div>
                     </ul>
                 </div>
             </div>
         </div>
+
+
+        <div id="add_employee" class="modal custom-modal fade" role="dialog">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Add Employee</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="{{ route('saveattendance') }}" method="POST">
+                            @csrf
+                            <div class="row">
+                                
+                            
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="col-form-label">User <span class="text-danger">*</span></label>
+            
+                                        <select name="attendance_employee_id" class="form-control">
+                                        @foreach($employeesnames as $employee)
+                                            <option value="{{$employee->id}}"> {{$employee->name}}</option>
+                                        @endforeach
+
+                                        </select>
+                                        {{-- <input class="form-control" type="email" id="email" name="email" placeholder="Auto email" readonly> --}}
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Check In Date/Time</label>
+                                        {{-- <div class="cal-icon"> --}}
+                                            <input class="form-control" type="text" name="date[]">
+                                        {{-- </div> --}}
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Check Out Date/Time</label>
+                                        <input class="form-control" type="text"  name="date[]">
+
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Reason</label>
+                                            <input class="form-control" type="text" name="reason">
+                                    </div>
+                                </div>
+                                
+                                
+                            </div>
+                            
+                            <div class="submit-section">
+                                <input class="btn btn-primary submit-btn" type="submit" value="Submit">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        
         <!-- /Page Header -->
         <form action="{{route('searchattendance')}}" method="GET">
         <!-- Search Filter -->
@@ -111,7 +182,17 @@
                                             @foreach($att['attendance_by_date'] as $innerkey=>$attendancebydate)
                             
                                                 @if(in_array($datekey, $att['uniqueDates']) && $datekey == $innerkey )
-                                                <a href="javascript:void(0);" data-toggle="modal" data-target="#attendance_info{{$key}}{{$innerkey}}"><i class="fa fa-check text-success"></i>
+                                              
+                                                @foreach($attendancebydate as $singleKey=>$singleattendance)
+                                                            @if($singleKey == "leavereason" && $attendancebydate['leavereason'] != null)
+                                                        Leave Reason {{$attendancebydate['leavereason'] }}
+                                                        @endif
+                                                    @endforeach
+                                                <a href="javascript:void(0);" data-toggle="modal" data-target="#attendance_info{{$key}}{{$innerkey}}">
+                                                    
+                                                   
+                                                    <i class="fa fa-check text-success" style="display:flex;justify-content: center"></i>
+                                                   
                                                     @include('form.modal.attendancemodal')
                                                   
                                                 @elseif(!(in_array($datekey, $att['uniqueDates'])))

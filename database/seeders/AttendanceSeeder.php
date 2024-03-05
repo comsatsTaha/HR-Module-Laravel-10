@@ -22,7 +22,7 @@ class AttendanceSeeder extends Seeder
 
         foreach ($users as $userData) { 
             $attendence[] = [ 
-                "id"=>$userData["uid"],
+                "uid"=>$userData["uid"],
                 "attendance_employee_id" => $userData['id'],
                 "state" => $userData['state'],
                 "date_time" => $userData["timestamp"],

@@ -113,7 +113,7 @@
                                         <label class="col-form-label">Biometric User <span class="text-danger">*</span></label>
                                         <select class="form-control" name="attendance_employee_id"> 
                                         @foreach($biometricusers as $biometricuser)
-                                            <option value="{{$biometricuser['uid']}}">{{$biometricuser['name']}}</option>
+                                            <option value="{{$biometricuser['userid']}}">{{$biometricuser['name']}}</option>
                                         @endforeach
 
                                         </select>

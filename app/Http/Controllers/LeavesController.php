@@ -144,6 +144,7 @@ class LeavesController extends Controller
                 ->map(function ($groupedAttendance) {
                     $firstCheckIn = null;
                     $lastCheckOut = null;
+                    $leavereason = null;
     
                     foreach ($groupedAttendance as $attendance) {
                         if ($attendance->type == 0 && ($firstCheckIn == null || $attendance->date_time < $firstCheckIn)) {
@@ -152,10 +153,15 @@ class LeavesController extends Controller
                             $lastCheckOut = $attendance->date_time;
                         }
                     }
+                    foreach ($groupedAttendance as $attendance) {
+                        if($attendance->reason != null)
+                            $leavereason= $attendance->reason;
+                    }
     
                     return [
                         'check_in' => $firstCheckIn,
                         'check_out' => $lastCheckOut,
+                        'leavereason'=>$leavereason
                     ];
                 });
     
@@ -200,8 +206,7 @@ class LeavesController extends Controller
         $userLeaves = LeavesAdmin::all();
 
      
-        $employeesnames= AttendanceEmployee::all()->pluck('name');
-      
+        $employeesnames= AttendanceEmployee::all();
         return view('form.attendance', compact('attendance','datesOnly','holidays','employeesnames','userLeaves'));
     }
 

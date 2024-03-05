@@ -28,7 +28,10 @@ class RefreshAttendance extends Command
      */
     public function handle()
     {
-        $employeeattendance= Attendance::orderBy('id','desc')->first();
+        $employeeattendance = Attendance::whereNotNull('uid')
+                                 ->orderBy('id', 'desc')
+                                 ->first();
+
         $zk = new ZKTeco('210.56.25.222');
         $zk->connect();
         $attendanceData = $zk->getAttendance();
@@ -36,36 +39,36 @@ class RefreshAttendance extends Command
         $usersToCreate = [];
         $filteredusers=[];
         $lastemployee= AttendanceEmployee::orderBy('id','desc')->first();
-        foreach ($usersData as $user) {
-        if ($user['userid'] > $lastemployee->id) {
-            $filteredusers[] = $user;
-            }
-        }
-        foreach ($filteredusers as $userData) {
-            $usersToCreate[] = [
-                "id" => $userData['userid'],
-                "name" => $userData['name'],
-                "role" => $userData["role"],
-                "password" => $userData['password'],
-                "card_no" => $userData['cardno']
-            ];
-        }
-        if (!empty($usersToCreate)) {
-            AttendanceEmployee::insert($usersToCreate);
-        }
+        // foreach ($usersData as $user) {
+        // if ($user['userid'] > $lastemployee->id) {
+        //     $filteredusers[] = $user;
+        //     }
+        // }
+        // foreach ($filteredusers as $userData) {
+        //     $usersToCreate[] = [
+        //         "id" => $userData['userid'],
+        //         "name" => $userData['name'],
+        //         "role" => $userData["role"],
+        //         "password" => $userData['password'],
+        //         "card_no" => $userData['cardno']
+        //     ];
+        // }
+        // if (!empty($usersToCreate)) {
+        //     AttendanceEmployee::insert($usersToCreate);
+        // }
         
         $filteredAttendance = [];
         
         foreach ($attendanceData as $attendances) {
-            if ($attendances['uid'] > $employeeattendance->id) {
+            if ($attendances['uid'] > $employeeattendance->uid) {
                 $filteredAttendance[] = $attendances;
             }
         }
-        // dd($filteredAttendance);
+      
         $attendancetocreate= [];
         foreach ($filteredAttendance as $userData) { 
             $attendancetocreate[] = [ 
-                "id"=>$userData["uid"],
+                "uid"=>$userData["uid"],
                 "attendance_employee_id" => $userData['id'],
                 "state" => $userData['state'],
                 "date_time" => $userData["timestamp"],

@@ -206,26 +206,28 @@ class UserManagementController extends Controller
     // save new user
     public function addNewUserSave(Request $request)
     {
-        $request->validate([
-            'name'      => 'required|string|max:255',
-            'email'     => 'required|string|email|max:255|unique:users',
-            'phone'     => 'required|min:11|numeric',
-            'role_name' => 'required|string|max:255',
-            'position'  => 'required|string|max:255',
-            'department'=> 'required|string|max:255',
-            'status'    => 'required|string|max:255',
-            'image'     => 'required|image',
-            'password'  => 'required|string|min:8|confirmed',
-            'password_confirmation' => 'required',
-        ]);
+        // dd($request->all());
+        // $request->validate([
+        //     'name'      => 'required|string|max:255',
+        //     'email'     => 'required|string|email|max:255|unique:users',
+        //     'phone'     => 'required|min:11|numeric',
+        //     'role_name' => 'required|string|max:255',
+        //     'position'  => 'required|string|max:255',
+        //     'department'=> 'required|string|max:255',
+        //     'status'    => 'required|string|max:255',
+        //     'image'     => 'required|image',
+        //     'password'  => 'required|string|min:8|confirmed',
+        //     'password_confirmation' => 'required',
+        // ]);
         DB::beginTransaction();
         try{
             $dt       = Carbon::now();
             $todayDate = $dt->toDayDateTimeString();
 
-            $image = time().'.'.$request->image->extension();  
-            $request->image->move(public_path('assets/images'), $image);
-
+            if($request->image){
+                $image = time().'.'.$request->image->extension();  
+                $request->image->move(public_path('assets/images'), $image);
+            }
             $user = new User;
             $user->name         = $request->name;
             $user->email        = $request->email;

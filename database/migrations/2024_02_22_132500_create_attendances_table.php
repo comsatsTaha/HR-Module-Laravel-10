@@ -13,10 +13,12 @@ return new class extends Migration
     {
         Schema::create('attendances', function (Blueprint $table) {
             $table->id();
+            $table->string('uid')->nullable();
             $table->foreignId('attendance_employee_id');
             $table->string('state');
             $table->string('date_time');
             $table->string('type');
+            $table->string('reason')->nullable();
             $table->timestamps();
         });
     }

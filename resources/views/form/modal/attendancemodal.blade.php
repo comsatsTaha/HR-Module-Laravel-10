@@ -35,7 +35,7 @@
                                 $checkInTime = strtotime($singleattendance);
                             @endphp
                                 @continue
-                                @else
+                                @elseif($singleKey== "check_out")
                                 <div class="punch-det">
                                     <h6>Punch Out at</h6>
                                     @if($singleattendance !=null )
@@ -46,6 +46,7 @@
                                     @endif
                                 </div>
                                 @php
+                               if($singleKey != "leavereason"){
                                 $checkOutTime = strtotime($singleattendance);
                                 if($checkOutTime && $checkInTime){
                                     $hoursWorked = ($checkOutTime - $checkInTime) / 3600; // Convert seconds to hours
@@ -55,6 +56,7 @@
                                     $hoursWorked = 0; // Convert seconds to hours
                                 $totalHours = 0;
                                 }
+                            }
                               
                             @endphp
                                 @continue
@@ -112,9 +114,17 @@
                                             {{$singleattendance}}
                                         </p>
                                     </li>
-                                    @else
+                                    @elseif($singleKey== "check_out")
                                     <li>
                                         <p class="mb-0">CheckOut At</p>
+                                        <p class="res-activity-time" style="color: black">
+                                            <i class="fa fa-clock-o"></i>
+                                            {{$singleattendance}}
+                                        </p>
+                                    </li>
+                                    @elseif($singleKey== "leavereason")
+                                    <li>
+                                        <p class="mb-0">Leave Reason</p>
                                         <p class="res-activity-time" style="color: black">
                                             <i class="fa fa-clock-o"></i>
                                             {{$singleattendance}}

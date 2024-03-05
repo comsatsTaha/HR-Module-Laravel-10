@@ -6,6 +6,8 @@
         <!-- Page Content -->
         <div class="content container-fluid">
             <!-- Page Header -->
+            @if(auth()->user()->role_name != "Super Admin")
+
             <div class="page-header">
                 <div class="row align-items-center">
                     <div class="col">
@@ -47,9 +49,12 @@
                     </div>
                 </div>
             </div>
+            @endif
             <!-- /Leave Statistics -->
 
             <!-- Search Filter -->
+
+            
             <div class="row filter-row">
                 <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12">  
                     <div class="form-group form-focus">

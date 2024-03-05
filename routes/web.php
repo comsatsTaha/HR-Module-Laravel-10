@@ -208,6 +208,7 @@ Route::controller(EmployeeController::class)->group(function () {
 Route::controller(EmployeeController::class)->group(function () {
     Route::get('employee/profile/{user_id}', 'profileEmployee')->middleware('auth')->name('employee/profile');
     Route::get('attendanceemployee/profile/{user_id}', 'attendanceemployee')->middleware('auth')->name('attendanceemployee/profile');
+    Route::post('saveattendance', 'saveattendance')->middleware('auth')->name('saveattendance');
 
 });
 
