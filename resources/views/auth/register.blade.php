@@ -2,7 +2,7 @@
 @section('content')
     <div class="main-wrapper">
         <div class="account-content">
-            <a href="{{ route('form/job/list') }}" class="btn btn-primary apply-btn">Apply Job</a>
+            {{-- <a href="{{ route('form/job/list') }}" class="btn btn-primary apply-btn">Apply Job</a> --}}
             <div class="container">
                 <!-- Account Logo -->
                 <div class="account-logo">

@@ -473,9 +473,14 @@ class EmployeeController extends Controller
     }
 
     public function saveattendance(Request $request){
-        // dd($request->all());
+        $dates = $request->input('date');
+        foreach ($dates as $key => $date) {
+            $formattedDate = str_replace('T', ' ', $date);
+            $dates[$key] = $formattedDate;
+        }
+        $request->merge(['date' => $dates]);
         foreach($request->date as $key=>$date){
-            if($key== 0){
+            if($key== 0 && $date != null){
                 Attendance::create([
                     'attendance_employee_id' =>$request->attendance_employee_id,
                     'date_time'=> $date,
@@ -484,7 +489,7 @@ class EmployeeController extends Controller
                     'type'=> "0"
                 ]);
             }
-            else{
+            else if($key== 1 && $date != null){
                 Attendance::create([
                     'attendance_employee_id' =>$request->attendance_employee_id,
                     'date_time'=> $date,

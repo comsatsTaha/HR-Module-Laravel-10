@@ -63,7 +63,7 @@
 			<!-- Logo -->
 			<div class="header-left">
 				<a href="{{ route('home') }}" class="logo">
-					<img src="{{ URL::to('/assets/images/'. Auth::user()->avatar) }}" width="40" height="40" alt="">
+					<img src="{{ URL::to('/assets/images/comsats_software_solutions_logo.png') }}" width="90" height="90" alt="">
 				</a>
 			</div>
 			<!-- /Logo -->
@@ -97,7 +97,7 @@
 				<!-- /Search -->
 
 				<!-- Flag -->
-				<li class="nav-item dropdown has-arrow flag-nav">
+				{{-- <li class="nav-item dropdown has-arrow flag-nav">
 					<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button">
 						<img src="{{ URL::to('assets/img/flags/us.png') }}" alt="" height="20"> <span>English</span>
 					</a>
@@ -107,7 +107,7 @@
 						<a href="javascript:void(0);" class="dropdown-item">
 						<img src="{{ URL::to('assets/img/flags/kh.png') }}" alt="" height="16"> Khmer </a>
 					</div>
-				</li>
+				</li> --}}
 				<!-- /Flag -->
 
 				<!-- Notifications -->
@@ -301,7 +301,6 @@
 				<li class="nav-item dropdown has-arrow main-drop">
 					<a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
 						<span class="user-img">
-						<img src="{{ URL::to('/assets/images/'. Auth::user()->avatar) }}" alt="{{ Auth::user()->name }}">
 						<span class="status online"></span></span>
 						<span>{{ Session::get('name') }}</span>
 					</a>

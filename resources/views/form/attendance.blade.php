@@ -55,14 +55,14 @@
                                     <div class="form-group">
                                         <label>Check In Date/Time</label>
                                         {{-- <div class="cal-icon"> --}}
-                                            <input class="form-control" type="text" name="date[]">
+                                            <input class="form-control" type="datetime-local" name="date[]">
                                         {{-- </div> --}}
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Check Out Date/Time</label>
-                                        <input class="form-control" type="text"  name="date[]">
+                                        <input class="form-control" type="datetime-local"  name="date[]">
 
                                     </div>
                                 </div>
@@ -97,7 +97,7 @@
                     <select class="form-control" name="name">
                         <option value="" disabled selected>Select Name</option>
                         @foreach($employeesnames as $name)
-                        <option value="{{$name}}">{{$name}}</option>
+                        <option value="{{$name->name}}">{{$name->name}}</option>
                         @endforeach
                     </select>
                 </div>
@@ -177,7 +177,28 @@
                                     @php
                                     $holidayDates = array_column($holidays, 'date_holiday');
                                 @endphp
+                                 <?php
+
+                                 $allDates = [];
+                                 
+                                 foreach ($userLeaves as $leave) {
+                                     $fromDate = new DateTime($leave->from_date);
+                                     $toDate = new DateTime($leave->to_date);
+                                     $employeeId = $leave->user_id;
+                                 
+                                     // Iterate from from_date to to_date and add each date to the array as strings
+                                     while ($fromDate <= $toDate) {
+                                         $allDates[$employeeId][] = $fromDate->format('Y-m-d'); // Format the date as per your requirement
+                                         $fromDate->modify('+1 day'); // Move to the next day
+                                     }
+                                 }
+                                 
+                                 
+                                 
+                                 ?>
+                                 
                                     @foreach($datesOnly as $datekey=>$date)
+                                    
                                         <td>
                                             @foreach($att['attendance_by_date'] as $innerkey=>$attendancebydate)
                             
@@ -185,7 +206,7 @@
                                               
                                                 @foreach($attendancebydate as $singleKey=>$singleattendance)
                                                             @if($singleKey == "leavereason" && $attendancebydate['leavereason'] != null)
-                                                        Leave Reason {{$attendancebydate['leavereason'] }}
+                                                       <span style="color: green"> Leave Reason   {{$attendancebydate['leavereason'] }} </span>
                                                         @endif
                                                     @endforeach
                                                 <a href="javascript:void(0);" data-toggle="modal" data-target="#attendance_info{{$key}}{{$innerkey}}">
@@ -201,18 +222,25 @@
                                                     $holidayIndex = array_search($datekey, $holidayDates);
                                                 @endphp
                                                 <span style="color: orange">{{ $holidays[$holidayIndex]['name_holiday'] }}</span>
-                                                @elseif(in_array($datekey, $userLeaves->pluck('from_date')->toArray()))
-                                                @foreach($userLeaves as $leave)
-                                                        @if($leave->from_date === $datekey && $att['employee']->employee && $leave->user_id == $att['employee']->employee->employee_id)
-                                                                <span style="color: red">Leave - {{ $leave->leave_reason }}</span>
-                                                          
 
-                                                        @elseif($leave->from_date === $datekey)
-                                                            <span><i class="fa fa-close text-danger"></i></span>
-                                                        @endif
+                                         
+                                                @elseif(isset($att['employee']) && isset($att['employee']->employee) && isset($att['employee']->employee->employee_id) && isset($allDates[$att['employee']->employee->employee_id]) && in_array($datekey, $allDates[$att['employee']->employee->employee_id]))
+
+
+
+                                                @foreach($userLeaves as $leave)
+                                                        @if( $att['employee']->employee && $leave->user_id == $att['employee']->employee->employee_id)
+                                                                <span style="color: red">Leave - {{ $leave->leave_reason }}</span>
+                                                    
+                                                        @break
+                                                        @else($leave->from_date === $datekey)
+                                                            <span><i class="fa fa-close text-danger" style="display:flex;justify-content: center"></i></span>
+                                                      
+                                                         @endif
+
                                                 @endforeach
                                             @else
-                                                <span><i class="fa fa-close text-danger"></i></span>
+                                                <span><i class="fa fa-close text-danger" style="display:flex;justify-content: center"></i></span>
                                             @endif
                                                 @break
                                                 @endif

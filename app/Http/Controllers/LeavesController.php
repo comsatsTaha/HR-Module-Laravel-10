@@ -10,6 +10,8 @@ use Illuminate\Http\Request;
 use Brian2694\Toastr\Facades\Toastr;
 use App\Models\LeavesAdmin;
 use Carbon\Carbon;
+use DateInterval;
+use DatePeriod;
 use DB;
 use DateTime;
 use Rats\Zkteco\Lib\ZKTeco;
@@ -30,14 +32,11 @@ class LeavesController extends Controller
     public function saveRecord(Request $request)
     {
         // dd($request->all());
-        // $request->validate([
-        //     'leave_type'   => 'required|string|max:255',
-        //     'from_date'    => 'required|string|max:255',
-        //     'to_date'      => 'required|string|max:255',
-        //     'leave_reason' => 'required|string|max:255',
-        // ]);
+       
         $attendanceemployee = auth()->user();
-      
+    
+     
+              
         DB::beginTransaction();
         try {
 
@@ -64,6 +63,9 @@ class LeavesController extends Controller
             Toastr::error('Add Leaves fail :)', 'Error');
             return redirect()->back();
         }
+
+       
+   
     }
 
     // edit record
@@ -182,6 +184,7 @@ class LeavesController extends Controller
                 'uniqueDates' => $uniqueDates
             ];
         });
+
     
     
 
@@ -300,14 +303,10 @@ class LeavesController extends Controller
         foreach ($dates as $carbonDate) {
             $datesOnly[$carbonDate->toDateString()] = $carbonDate->format('l');
         }
-    
         // Fetch holidays
         $holidays = Holiday::all()->toArray();
-        $employeesnames= AttendanceEmployee::all()->pluck('name');
-        
+        $employeesnames= AttendanceEmployee::all();
         $userLeaves = LeavesAdmin::all();
-
-    
         return view('form.attendance', compact('attendance', 'datesOnly', 'holidays','employeesnames','userLeaves'));
     }
     
