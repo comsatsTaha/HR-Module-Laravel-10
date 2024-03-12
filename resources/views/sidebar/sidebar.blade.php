@@ -10,7 +10,7 @@
                 <li class="{{set_active(['home','em/dashboard'])}} submenu" >
                     <a href="#" class="{{ set_active(['home','em/dashboard']) ? 'noti-dot' : '' }}">
                         <i class="la la-dashboard blackcolour" ></i>
-                        <span class="blackcolour"> Dashboard</span> <span class="menu-arrow" class="blackcolour"></span>
+                        <span class="blackcolour"> Dashboard</span> <span class="menu-arrow blackcolour"></span>
                     </a>    
                     <ul style="{{ request()->is('/*') ? 'display: block;' : 'display: none;' }}">
                         <li ><a class="{{set_active(['home'])}} " href="{{ route('home') }}" style="color: black">Admin Dashboard</a></li>
@@ -39,11 +39,14 @@
                     'form/timesheet/page','form/shiftscheduling/page','form/overtime/page']) ? 'noti-dot' : '' }}">
                         <i class="la la-user blackcolour"></i> <span class="blackcolour"> Employees</span> <span class="menu-arrow blackcolour"></span>
                     </a>
+                    @php
+                    $countLeaves = DB::table('leaves_admins')->where('status', 'Pending')->count();
+                @endphp
                     <ul style="{{ request()->is('/*') ? 'display: block;' : 'display: none;' }}">
                         <li><a class="{{set_active(['all/employee/list','all/employee/card'])}}" href="{{ route('all/employee/card') }}" style="color: black">All Employees</a></li>
                         <li><a class="{{set_active(['form/holidays/new'])}}" href="{{ route('form/holidays/new') }}" style="color: black">Holidays</a></li>
                         <li><a class="{{set_active(['form/leaves/new'])}}" href="{{ route('form/leaves/new') }}" style="color: black">Leaves (Admin) 
-                            <span class="badge badge-pill bg-primary float-right">1</span></a>
+                            <span class="badge badge-pill bg-primary float-right">{{$countLeaves}}</span></a>
                         </li>
                         <li><a class="{{set_active(['form/leavesemployee/new'])}}" href="{{route('form/leavesemployee/new')}}" style="color: black">Leaves (Employee)</a></li> 
                         {{-- <li><a class="{{set_active(['form/leavesettings/page'])}}" href="{{ route('form/leavesettings/page') }}">Leave Settings</a></li> --}}

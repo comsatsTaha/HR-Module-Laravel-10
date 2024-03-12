@@ -29,7 +29,6 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-
         $.ajax({
             url: '{{ route('changeLeaveStatus') }}',
             type: 'POST',
@@ -40,7 +39,7 @@
             },
             success: function(response) {
                 console.log(response);
-                $('#labelstatus').text(response.status);
+                $('#labelstatus'.response.id).text(response.status);
 
             },
             error: function(xhr, status, error) {
