@@ -80,12 +80,14 @@ class LoginController extends Controller
             Session::put('avatar', $user->avatar);
             Session::put('position', $user->position);
             Session::put('department', $user->department);
-            
             $activityLog = ['name'=> Session::get('name'),'email'=> $username,'description' => 'Has log in','date_time'=> $todayDate,];
-            DB::table('activity_logs')->insert($activityLog);
-            
+            $taha = DB::table('activity_logs')->insert($activityLog);
+            // dd($activityLog);
             Toastr::success('Login successfully :)','Success');
-            return redirect()->intended('home');
+            if($user->role_name == "Super Admin")
+                return redirect()->intended('home');
+            else
+              return redirect()->intended('em/dashboard');  
         } else {
             Toastr::error('fail, WRONG USERNAME OR PASSWORD :)','Error');
             return redirect('login');

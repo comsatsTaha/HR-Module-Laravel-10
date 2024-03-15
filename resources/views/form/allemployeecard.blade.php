@@ -62,7 +62,7 @@
                 <div class="col-md-4 col-sm-6 col-12 col-lg-4 col-xl-3">
                     <div class="profile-widget">
                         <div class="profile-img">
-                            <a href="{{ url('employee/profile/'.$lists->user_id) }}" class="avatar"><img src="{{ URL::to('/assets/images/'. $lists->avatar) }}" alt="{{ $lists->avatar }}" alt="{{ $lists->avatar }}"></a>
+                            <a href="{{ url('employee/profile/'.$lists->user_id) }}" class="avatar"><img src="{{ URL::to('/assets/images/'. $lists->avatar) }}" alt="{{ $lists->avatar }}" alt="{{ $lists->avatar }}" height="80px"></a>
                         </div>
                         <div class="dropdown profile-action">
                             <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="material-icons">more_vert</i></a>
@@ -105,9 +105,33 @@
                                         </select>
                                     </div>
                                 </div>
-                            
-                                
 
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="col-form-label">BPS</label>
+                                        <select class="select select2s-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true" id="salary" name="bps">
+                                            <option value="">-- Select --</option>
+                                            @foreach ($salaries as $key=>$salary )
+                                                <option value="{{ $salary->id }}" data-mts = {{ $salary->mts }} data-max_stages = {{ $salary->max_stages }}  data-rate_of_increment= {{ $salary->rate_of_increment }}>{{ $salary->bps }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="col-form-label">Stages</label>
+                                        <select class="select select2s-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true" id="stages" name="stages">
+                                            <!-- Options will be dynamically generated here -->
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="col-form-label">Net Salary <span class="text-danger">*</span></label>
+                                        <input class="form-control" type="text" id="netsalary" name="netsalary" placeholder="Net Salary" readonly>
+                                    </div>
+                                </div>
                                 <div class="col-sm-6">
                                     <div class="form-group">
                                         <label class="col-form-label">Biometric User <span class="text-danger">*</span></label>
@@ -144,13 +168,14 @@
                                         </select>
                                     </div>
                                 </div>
+                                
                                 <div class="col-sm-6">  
                                     <div class="form-group">
                                         <label class="col-form-label">Employee ID <span class="text-danger">*</span></label>
                                         <input type="text" class="form-control" id="employee_id" name="employee_id" placeholder="Auto id employee" readonly>
                                     </div>
                                 </div>
-                                <div class="col-sm-6">
+                                {{-- <div class="col-sm-6">
                                     <div class="form-group">
                                         <label class="col-form-label">Company</label>
                                         <select class="select select2s-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true" id="company" name="company">
@@ -160,7 +185,7 @@
                                             @endforeach
                                         </select>
                                     </div>
-                                </div>
+                                </div> --}}
                             </div>
                             <div class="table-responsive m-t-15">
                                 <table class="table table-striped custom-table">
@@ -254,8 +279,49 @@
         // select auto id and email
         $('#name').on('change',function()
         {
-            $('#employee_id').val($(this).find(':selected').data('employee_id'));
+            var taha = $('#employee_id').val($(this).find(':selected').data('employee_id'));
             $('#email').val($(this).find(':selected').data('email'));
+        });
+
+        var max_stages= '';
+        var mts = '';
+        var stage = '';
+        var netsalary = '';
+        var rate_of_increment= '';
+        $('#salary').on('change',function()
+        {
+            mts= $(this).find(':selected').data('mts');
+            max_stages= $(this).find(':selected').data('max_stages');
+            var maxStages = parseInt($('#salary').find(':selected').data('max_stages'));
+            rate_of_increment = $(this).find(':selected').data('rate_of_increment');
+            var selectOptions = '';
+            for (var i = maxStages; i > 0; i--) {
+                selectOptions += '<option value="' + i + '" data-stage="' + i + '">' + i + '</option>';
+            }
+            $('#stages').html(selectOptions);
+            // var taha = $('#employee_id').val($(this).find(':selected').data('employee_id'));
+            // $('#email').val($(this).find(':selected').data('email'));
+        });
+        
+
+        $('#stages').on('change',function()
+        {
+            var stage = $(this).find(':selected').data('stage');
+            var mts = $('#salary').find(':selected').data('mts');
+            // console.log(stage,rate_of_increment,mts);
+            var netsalary = parseInt((stage*rate_of_increment) + mts);
+            $('#netsalary').val(netsalary);
+    
+            // alert($(this).find(':selected').data('mts'));
+            // alert($(this).find(':selected').data('max_stages'));
+            // var maxStages = parseInt($('#salary').find(':selected').data('max_stages'));
+            // var selectOptions = '';
+            // for (var i = maxStages; i > 0; i--) {
+            //     selectOptions += '<option value="' + i + '">' + i + '</option>';
+            // }
+            // $('#stages').html(selectOptions);
+            // // var taha = $('#employee_id').val($(this).find(':selected').data('employee_id'));
+            // // $('#email').val($(this).find(':selected').data('email'));
         });
     </script>
     {{-- update js --}}

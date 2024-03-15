@@ -6,7 +6,7 @@
         <!-- Page Content -->
         <div class="content container-fluid">
             <!-- Page Header -->
-            @if(auth()->user()->role_name != "Super Admin")
+            @if(auth()->user()->role_name == "Employee")
 
             <div class="page-header">
                 <div class="row align-items-center">
@@ -22,30 +22,33 @@
                     </div>
                 </div>
             </div>
+            @endif
+            @if(auth()->user()->role_name == "Employee")
+
             <!-- Leave Statistics -->
             <div class="row">
                 <div class="col-md-3">
                     <div class="stats-info">
-                        <h6>Today Presents</h6>
-                        <h4>12 / 60</h4>
+                        <h6>Today Leave Requests</h6>
+                        <h4>{{$totalleavesCount}} / 12</h4>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="stats-info">
-                        <h6>Planned Leaves</h6>
-                        <h4>8 <span>Today</span></h4>
+                        <h6>Casual Leaves Requests</h6>
+                        <h4>{{$casualLeavesCount}} <span>This Year </span></h4>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="stats-info">
-                        <h6>Unplanned Leaves</h6>
-                        <h4>0 <span>Today</span></h4>
+                        <h6>Medical Leaves Requests</h6>
+                        <h4>{{$medicalLeavesCount}} <span>This Year</span></h4>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="stats-info">
                         <h6>Pending Requests</h6>
-                        <h4>12</h4>
+                        <h4>{{$pendingLeavesCount}}</h4>
                     </div>
                 </div>
             </div>
@@ -54,6 +57,7 @@
 
             <!-- Search Filter -->
 
+            @if(auth()->user()->role_name == "Super Admin")
             
             <div class="row filter-row">
                 <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12">  
@@ -104,6 +108,7 @@
                     <a href="#" class="btn btn-success btn-block"> Search </a>  
                 </div>     
             </div>
+            @endif
             <!-- /Search Filter -->
 
 			<!-- /Page Header -->
@@ -121,7 +126,9 @@
                                     <th>To</th>
                                     <th>No of Days</th>
                                     <th>Reason</th>
+                                    @if(auth()->user()->role_name == "Super Admin")
                                     <th class="text-center">Status</th>
+                                    @endif
                                     <th class="text-right">Actions</th>
                                 </tr>
                             </thead>
@@ -145,6 +152,7 @@
                                             <td>{{date('d F, Y',strtotime($items->to_date)) }}</td>
                                             <td class="day">{{$items->day}} Day</td>
                                             <td class="leave_reason">{{$items->leave_reason}}</td>
+                                            @if(auth()->user()->role_name == "Super Admin")
                                             <td class="text-center">
                                                 <div class="dropdown action-label">
                                                     <a class="btn btn-white btn-sm btn-rounded dropdown-toggle" href="#" data-toggle="dropdown" aria-expanded="false">
@@ -159,6 +167,7 @@
                                                     </div>
                                                 </div>
                                             </td>
+                                            @endif
                                             @include('form.modal.statusmodal')
                                             <td class="text-right">
                                                 <div class="dropdown dropdown-action">

@@ -11,6 +11,7 @@ use App\Models\Employee;
 use App\Models\department;
 use App\Models\User;
 use App\Models\module_permission;
+use App\Models\SalaryStructure;
 use Rats\Zkteco\Lib\ZKTeco;
 
 class EmployeeController extends Controller
@@ -20,7 +21,6 @@ class EmployeeController extends Controller
     {
         $users = DB::table('users')
                     ->join('employees', 'users.user_id', '=', 'employees.employee_id')
-                    ->select('users.*', 'employees.birth_date', 'employees.gender', 'employees.company')
                     ->get(); 
         $userList = DB::table('users')->get();
         $permission_lists = DB::table('permission_lists')->get();
@@ -28,8 +28,8 @@ class EmployeeController extends Controller
         $zk->connect();
         $biometricusers = $zk->getUser();
 
-
-        return view('form.allemployeecard',compact('users','userList','permission_lists','biometricusers'));
+        $salaries= SalaryStructure::all();
+        return view('form.allemployeecard',compact('users','userList','permission_lists','biometricusers','salaries'));
     }
     // all employee list
     public function listAllEmployee()
@@ -53,7 +53,6 @@ class EmployeeController extends Controller
             'birthDate'   => 'required|string|max:255',
             'gender'      => 'required|string|max:255',
             'employee_id' => 'required|string|max:255',
-            'company'     => 'required|string|max:255',
         ]);
 
         // dd($request->all());
@@ -71,8 +70,9 @@ class EmployeeController extends Controller
                 $employee->birth_date   = $request->birthDate;
                 $employee->gender       = $request->gender;
                 $employee->employee_id  = $request->employee_id;
-                $employee->company      = $request->company;
-                $employee->attendance_employee_id = $request->attendance_employee_id;
+                $employee->bps = $request->bps;
+                $employee->stage = $request->stages;
+                $employee->netsalary = $request->netsalary;
                 $employee->save();
     
                 for($i=0;$i<count($request->id_count);$i++)

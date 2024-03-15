@@ -26,6 +26,8 @@ class LeavesController extends Controller
             ->select('leaves_admins.*', 'users.position', 'users.name', 'users.avatar')
             ->get();
 
+    
+
         return view('form.leaves', compact('leaves'));
     }
     // save record
@@ -321,8 +323,16 @@ class LeavesController extends Controller
         ->select('leaves_admins.*', 'users.position', 'users.name', 'users.avatar')
         ->where('leaves_admins.user_id', auth()->user()->user_id)
         ->get();
+        $currentMonthStart = Carbon::now()->startOfMonth();
+        $currentMonthEnd = Carbon::now()->endOfMonth();
+        $totalleaves = LeavesAdmin::where('user_id', auth()->user()->user_id)
+            ->get();
+        $totalleavesCount= $totalleaves->count();
+        $casualLeavesCount = $totalleaves->where('leave_type', 'Casual Leave')->count();
+        $medicalLeavesCount = $totalleaves->where('leave_type', 'Medical Leave')->count();
+        $pendingLeavesCount = $totalleaves->where('status', 'Pending')->count();
     
-        return view('form.leaves', compact('leaves'));
+        return view('form.leaves', compact('leaves','casualLeavesCount','medicalLeavesCount','pendingLeavesCount','totalleavesCount'));
     }
 
     // shiftscheduling

@@ -18,7 +18,8 @@ class DatabaseSeeder extends Seeder
             AttendanceEmployeeSeeder::class,
             AttendanceSeeder::class,
             HolidaySeeder::class,
-            AdminUserSeeder::class
+            AdminUserSeeder::class,
+            SalaryStructureSeeder::class
         ]);
     }
 }

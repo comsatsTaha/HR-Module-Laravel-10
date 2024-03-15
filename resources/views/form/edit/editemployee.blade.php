@@ -64,12 +64,7 @@
                                         <input type="text" class="form-control" id="employee_id" name="employee_id" value="{{ $employees[0]->employee_id }}" readonly>
                                     </div>
                                 </div>
-                                <div class="form-group row">
-                                    <label class="col-form-label col-md-2">Company</label>
-                                    <div class="col-md-10">
-                                        <input type="text" class="form-control" id="company" name="company" value="{{ $employees[0]->company }}">
-                                    </div>
-                                </div>
+ 
 
                                 <div class="form-group row">
                                     <label class="col-form-label col-md-2">Employee Permission</label>

@@ -38,7 +38,7 @@
                                     <th>Title </th>
                                     <th>Holiday Date</th>
                                     <th>Day</th>
-                                    <th class="text-right">Action</th>
+                                    {{-- <th class="text-right">Action</th> --}}
                                 </tr>
                             </thead>
                             <tbody>
@@ -62,7 +62,7 @@
                                             <td hidden class="holidayDate">{{$items->date_holiday }}</td>
                                             <td>{{date('d F, Y',strtotime($items->date_holiday)) }}</td>
                                             <td>{{date('l',strtotime($items->date_holiday)) }}</td>
-                                            <td class="text-right">
+                                            {{-- <td class="text-right">
                                                 <div class="dropdown dropdown-action">
                                                     <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="material-icons">more_vert</i></a>
                                                     <div class="dropdown-menu dropdown-menu-right">
@@ -70,7 +70,7 @@
                                                         <a class="dropdown-item" href="#" data-toggle="modal" data-target="#delete_holiday"><i class="fa fa-trash-o m-r-5"></i> Delete</a>
                                                     </div>
                                                 </div>
-                                            </td>
+                                            </td> --}}
                                         </tr>
                                     @endif
                                 @endforeach

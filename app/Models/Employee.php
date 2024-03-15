@@ -14,7 +14,6 @@ class Employee extends Model
         'birth_date',
         'gender',
         'employee_id',
-        'company',
         'holidays',
         'leaves',
         'clients',
