@@ -171,7 +171,7 @@
                 <li> <a href="assets.html"><i class="la la-object-ungroup">
                     </i> <span>Assets</span></a>
                 </li> --}}
-                <li class="{{set_active(['user/dashboard/index','jobs/dashboard/index','user/dashboard/all','user/dashboard/applied/jobs','user/dashboard/interviewing','user/dashboard/offered/jobs','user/dashboard/visited/jobs','user/dashboard/archived/jobs','user/dashboard/save','jobs','job/applicants','job/details','page/manage/resumes','page/shortlist/candidates','page/interview/questions','page/offer/approvals','page/experience/level','page/candidates','page/schedule/timing','page/aptitude/result'])}} submenu">
+                {{-- <li class="{{set_active(['user/dashboard/index','jobs/dashboard/index','user/dashboard/all','user/dashboard/applied/jobs','user/dashboard/interviewing','user/dashboard/offered/jobs','user/dashboard/visited/jobs','user/dashboard/archived/jobs','user/dashboard/save','jobs','job/applicants','job/details','page/manage/resumes','page/shortlist/candidates','page/interview/questions','page/offer/approvals','page/experience/level','page/candidates','page/schedule/timing','page/aptitude/result'])}} submenu">
                     <a href="#" class="{{ set_active(['user/dashboard/index','jobs/dashboard/index','user/dashboard/all','user/dashboard/save','jobs','job/applicants','job/details']) ? 'noti-dot' : '' }}"><i class="la la-briefcase blackcolour"></i>
                         <span class="blackcolour"> Jobs </span> <span class="menu-arrow blackcolour"></span>
                     </a>
@@ -188,7 +188,7 @@
                         <li><a class="{{set_active(['page/schedule/timing'])}}" href="{{ route('page/schedule/timing') }}" style="color: black"> Schedule timing </a></li>
                         <li><a class="{{set_active(['page/aptitude/result'])}}" href="{{ route('page/aptitude/result') }}" style="color: black"> Aptitude Results </a></li>
                     </ul>
-                </li>
+                </li> --}}
                 {{-- <li class="menu-title"> <span>Pages</span> </li>
                 <li class="{{set_active(['employee/profile/*'])}} submenu">
                     <a href="#"><i class="la la-user"></i>
