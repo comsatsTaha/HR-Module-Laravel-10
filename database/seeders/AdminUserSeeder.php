@@ -18,11 +18,11 @@ class AdminUserSeeder extends Seeder
         User::create([
             'name'      => "SuperAdmin",
             'avatar'    => "",
-            'email'     => "taha@css.net.pk",
+            'email'     => "ahmad@css.net.pk",
             'join_date' => now(),
             'role_name' => "Super Admin",
             'status'    => 'Active',
-            'password'  => Hash::make("taha1234"),
+            'password'  => Hash::make("CSS@321@#!"),
         ]);
     }
 }

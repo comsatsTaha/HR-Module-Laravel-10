@@ -13,10 +13,11 @@
                     <ul class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ route('home') }}">Dashboard</a></li>
                         <li class="breadcrumb-item active">Attendance</li>
+                        @if(auth()->user()->role_name == "Super Admin")
                         <div class="col-auto float-right ml-auto">
                             <a href="#" class="btn add-btn" data-toggle="modal" data-target="#add_employee"><i class="fa fa-plus"></i> Add Attendance</a>
-                            
                         </div>
+                        @endif
                     </ul>
                 </div>
             </div>

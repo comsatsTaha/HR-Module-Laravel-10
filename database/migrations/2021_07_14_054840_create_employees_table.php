@@ -21,9 +21,6 @@ class CreateEmployeesTable extends Migration
             $table->string('birth_date')->nullable();
             $table->string('gender')->nullable();
             $table->string('employee_id')->nullable();
-            $table->string('bps')->nullable();
-            $table->string('stage')->nullable();
-            $table->string('netsalary')->nullable();
             $table->timestamps();
         });
     }

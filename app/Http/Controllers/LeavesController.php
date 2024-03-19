@@ -127,67 +127,135 @@ class LeavesController extends Controller
     // attendance admin
     public function attendanceIndex()
     {
-        $currentMonth = Carbon::now()->format('Y-m');
-        $attendance = AttendanceEmployee::with('attendance','employee')
-        ->get()
-        ->filter(function ($employee) use ($currentMonth) {
-            // Check if the employee has attendance in the current month
-            return $employee->attendance->first(function ($attendance) use ($currentMonth) {
-                return Carbon::parse($attendance->date_time)->format('Y-m') === $currentMonth;
-            }) !== null;
-        })
-        ->map(function ($employee) use ($currentMonth) {
-            // Your existing code to process attendance for each employee
-            $attendance_by_date = $employee->attendance
-                ->filter(function ($attendance) use ($currentMonth) {
-                    return Carbon::parse($attendance->date_time)->format('Y-m') === $currentMonth;
-                })
-                ->groupBy(function ($attendance) {
-                    return Carbon::parse($attendance->date_time)->format('Y-m-d');
-                })
-                ->map(function ($groupedAttendance) {
-                    $firstCheckIn = null;
-                    $lastCheckOut = null;
-                    $leavereason = null;
-    
-                    foreach ($groupedAttendance as $attendance) {
-                        if ($attendance->type == 0 && ($firstCheckIn == null || $attendance->date_time < $firstCheckIn)) {
-                            $firstCheckIn = $attendance->date_time;
-                        } elseif ($attendance->type == 1 && ($lastCheckOut == null || $attendance->date_time > $lastCheckOut)) {
-                            $lastCheckOut = $attendance->date_time;
-                        }
-                    }
-                    foreach ($groupedAttendance as $attendance) {
-                        if($attendance->reason != null)
-                            $leavereason= $attendance->reason;
-                    }
-    
-                    return [
-                        'check_in' => $firstCheckIn,
-                        'check_out' => $lastCheckOut,
-                        'leavereason'=>$leavereason
-                    ];
-                });
-    
-            $uniqueDates = $employee->attendance
-                ->filter(function ($attendance) use ($currentMonth) {
-                    return Carbon::parse($attendance->date_time)->format('Y-m') === $currentMonth;
-                })
-                ->pluck('date_time')
-                ->map(function ($dateTime) {
-                    return Carbon::parse($dateTime)->format('Y-m-d');
-                })
-                ->unique()
-                ->toArray();
-    
-            return [
-                'employee' => $employee,
-                'attendance_by_date' => $attendance_by_date,
-                'uniqueDates' => $uniqueDates
-            ];
-        });
 
-    
+
+        $currentMonth = Carbon::now()->format('Y-m');
+        if(auth()->user()->role_name=="Super Admin")
+        {
+            
+            $attendance = AttendanceEmployee::with('attendance','employee')
+            ->get()
+            ->filter(function ($employee) use ($currentMonth) {
+                // Check if the employee has attendance in the current month
+                return $employee->attendance->first(function ($attendance) use ($currentMonth) {
+                    return Carbon::parse($attendance->date_time)->format('Y-m') === $currentMonth;
+                }) !== null;
+            })
+            ->map(function ($employee) use ($currentMonth) {
+                // Your existing code to process attendance for each employee
+                $attendance_by_date = $employee->attendance
+                    ->filter(function ($attendance) use ($currentMonth) {
+                        return Carbon::parse($attendance->date_time)->format('Y-m') === $currentMonth;
+                    })
+                    ->groupBy(function ($attendance) {
+                        return Carbon::parse($attendance->date_time)->format('Y-m-d');
+                    })
+                    ->map(function ($groupedAttendance) {
+                        $firstCheckIn = null;
+                        $lastCheckOut = null;
+                        $leavereason = null;
+        
+                        foreach ($groupedAttendance as $attendance) {
+                            if ($attendance->type == 0 && ($firstCheckIn == null || $attendance->date_time < $firstCheckIn)) {
+                                $firstCheckIn = $attendance->date_time;
+                            } elseif ($attendance->type == 1 && ($lastCheckOut == null || $attendance->date_time > $lastCheckOut)) {
+                                $lastCheckOut = $attendance->date_time;
+                            }
+                        }
+                        foreach ($groupedAttendance as $attendance) {
+                            if($attendance->reason != null)
+                                $leavereason= $attendance->reason;
+                        }
+        
+                        return [
+                            'check_in' => $firstCheckIn,
+                            'check_out' => $lastCheckOut,
+                            'leavereason'=>$leavereason
+                        ];
+                    });
+        
+                $uniqueDates = $employee->attendance
+                    ->filter(function ($attendance) use ($currentMonth) {
+                        return Carbon::parse($attendance->date_time)->format('Y-m') === $currentMonth;
+                    })
+                    ->pluck('date_time')
+                    ->map(function ($dateTime) {
+                        return Carbon::parse($dateTime)->format('Y-m-d');
+                    })
+                    ->unique()
+                    ->toArray();
+        
+                return [
+                    'employee' => $employee,
+                    'attendance_by_date' => $attendance_by_date,
+                    'uniqueDates' => $uniqueDates
+                ];
+            });
+        }
+        else{
+            $attendance = AttendanceEmployee::with('attendance','employee')
+            ->get()
+            ->filter(function ($employee) use ($currentMonth) {
+                // Check if the employee has attendance in the current month
+                return $employee->employee?->employee_id == auth()->user()->user_id
+                && $employee->attendance->first(function ($attendance) use ($currentMonth) {
+                    return Carbon::parse($attendance->date_time)->format('Y-m') === $currentMonth;
+                }) !== null;
+            })
+            ->map(function ($employee) use ($currentMonth) {
+            
+                $attendance_by_date = $employee->attendance
+                    ->filter(function ($attendance) use ($currentMonth) {
+                        return Carbon::parse($attendance->date_time)->format('Y-m') === $currentMonth;
+                    })
+                    ->groupBy(function ($attendance) {
+                        return Carbon::parse($attendance->date_time)->format('Y-m-d');
+                    })
+                    ->map(function ($groupedAttendance) {
+                        $firstCheckIn = null;
+                        $lastCheckOut = null;
+                        $leavereason = null;
+        
+                        foreach ($groupedAttendance as $attendance) {
+                            if ($attendance->type == 0 && ($firstCheckIn == null || $attendance->date_time < $firstCheckIn)) {
+                                $firstCheckIn = $attendance->date_time;
+                            } elseif ($attendance->type == 1 && ($lastCheckOut == null || $attendance->date_time > $lastCheckOut)) {
+                                $lastCheckOut = $attendance->date_time;
+                            }
+                        }
+                        foreach ($groupedAttendance as $attendance) {
+                            if($attendance->reason != null)
+                                $leavereason= $attendance->reason;
+                        }
+        
+                        return [
+                            'check_in' => $firstCheckIn,
+                            'check_out' => $lastCheckOut,
+                            'leavereason'=>$leavereason
+                        ];
+                    });
+        
+                $uniqueDates = $employee->attendance
+                    ->filter(function ($attendance) use ($currentMonth) {
+                        return Carbon::parse($attendance->date_time)->format('Y-m') === $currentMonth;
+                    })
+                    ->pluck('date_time')
+                    ->map(function ($dateTime) {
+                        return Carbon::parse($dateTime)->format('Y-m-d');
+                    })
+                    ->unique()
+                    ->toArray();
+        
+                return [
+                    'employee' => $employee,
+                    'attendance_by_date' => $attendance_by_date,
+                    'uniqueDates' => $uniqueDates
+                ];
+            });
+        }
+
+        
+
     
 
         $currentMonth = Carbon::now()->startOfMonth();

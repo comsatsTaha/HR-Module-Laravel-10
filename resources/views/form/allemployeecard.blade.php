@@ -105,7 +105,7 @@
                                         </select>
                                     </div>
                                 </div>
-
+{{-- 
                                 <div class="col-sm-6">
                                     <div class="form-group">
                                         <label class="col-form-label">BPS</label>
@@ -124,14 +124,14 @@
                                             <!-- Options will be dynamically generated here -->
                                         </select>
                                     </div>
-                                </div>
+                                </div> --}}
 
-                                <div class="col-sm-6">
+                                {{-- <div class="col-sm-6">
                                     <div class="form-group">
                                         <label class="col-form-label">Net Salary <span class="text-danger">*</span></label>
                                         <input class="form-control" type="text" id="netsalary" name="netsalary" placeholder="Net Salary" readonly>
                                     </div>
-                                </div>
+                                </div> --}}
                                 <div class="col-sm-6">
                                     <div class="form-group">
                                         <label class="col-form-label">Biometric User <span class="text-danger">*</span></label>

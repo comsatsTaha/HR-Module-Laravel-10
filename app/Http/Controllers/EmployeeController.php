@@ -70,9 +70,7 @@ class EmployeeController extends Controller
                 $employee->birth_date   = $request->birthDate;
                 $employee->gender       = $request->gender;
                 $employee->employee_id  = $request->employee_id;
-                $employee->bps = $request->bps;
-                $employee->stage = $request->stages;
-                $employee->netsalary = $request->netsalary;
+                $employee->attendance_employee_id = $request->attendance_employee_id;
                 $employee->save();
     
                 for($i=0;$i<count($request->id_count);$i++)
@@ -119,11 +117,11 @@ class EmployeeController extends Controller
     // update record employee
     public function updateRecord( Request $request)
     {
+        // dd($request->all());
         DB::beginTransaction();
         try{
             // update table Employee
             $updateEmployee = [
-                'id'=>$request->id,
                 'name'=>$request->name,
                 'email'=>$request->email,
                 'birth_date'=>$request->birth_date,
@@ -133,7 +131,6 @@ class EmployeeController extends Controller
             ];
             // update table user
             $updateUser = [
-                'id'=>$request->id,
                 'name'=>$request->name,
                 'email'=>$request->email,
             ];
@@ -144,7 +141,6 @@ class EmployeeController extends Controller
                 $UpdateModule_permissions = [
                     'employee_id' => $request->employee_id,
                     'module_permission' => $request->permission[$i],
-                    'id'                => $request->id_permission[$i],
                     'read'              => $request->read[$i],
                     'write'             => $request->write[$i],
                     'create'            => $request->create[$i],
@@ -152,11 +148,13 @@ class EmployeeController extends Controller
                     'import'            => $request->import[$i],
                     'export'            => $request->export[$i],
                 ];
+                
                 module_permission::where('id',$request->id_permission[$i])->update($UpdateModule_permissions);
             }
 
-            User::where('id',$request->id)->update($updateUser);
-            Employee::where('id',$request->id)->update($updateEmployee);
+
+            User::where('user_id', $request->employee_id)->update($updateUser);
+            // Employee::where('employee_id',$request->employee_id)->update($updateEmployee);
         
             DB::commit();
             Toastr::success('updated record successfully :)','Success');
