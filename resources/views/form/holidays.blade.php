@@ -15,9 +15,11 @@
                             <li class="breadcrumb-item active">Holidays</li>
                         </ul>
                     </div>
+                    @if(auth()->user()->role_name == "Super Admin")
                     <div class="col-auto float-right ml-auto">
                         <a href="#" class="btn add-btn" data-toggle="modal" data-target="#add_holiday"><i class="fa fa-plus"></i> Add Holiday</a>
                     </div>
+                    @endif
                 </div>
             </div>
 			<!-- /Page Header -->
@@ -62,6 +64,7 @@
                                             <td hidden class="holidayDate">{{$items->date_holiday }}</td>
                                             <td>{{date('d F, Y',strtotime($items->date_holiday)) }}</td>
                                             <td>{{date('l',strtotime($items->date_holiday)) }}</td>
+                                          @if(auth()->user()->role_name == "Super Admin")
                                             <td class="text-right">
                                                 <div class="dropdown dropdown-action">
                                                     <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="material-icons">more_vert</i></a>
@@ -71,6 +74,7 @@
                                                     </div>
                                                 </div>
                                             </td>
+                                            @endif
                                         </tr>
                                     @endif
                                 @endforeach

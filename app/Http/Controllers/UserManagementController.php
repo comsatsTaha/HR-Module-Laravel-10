@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\EmergencyContact;
 use Illuminate\Http\Request;
 use Brian2694\Toastr\Facades\Toastr;
 use DB;
@@ -127,21 +128,22 @@ class UserManagementController extends Controller
         $userInformation = PersonalInformation::where('user_id',$profile)->first(); // user information
         $user = DB::table('users')->get();
         $employees = DB::table('profile_information')->where('user_id',$profile)->first();
-
+        $emergencyInformation = EmergencyContact::where('user_id',auth()->user()->id)->first(); // user information
+      
         if(empty($employees))
         {
             $information = DB::table('profile_information')->where('user_id',$profile)->first();
-            return view('usermanagement.profile_user',compact('information','user','userInformation'));
+            return view('usermanagement.profile_user',compact('information','user','userInformation','emergencyInformation'));
 
         } else {
             $user_id = $employees->user_id;
             if($user_id == $profile)
             {
                 $information = DB::table('profile_information')->where('user_id',$profile)->first();
-                return view('usermanagement.profile_user',compact('information','user','userInformation'));
+                return view('usermanagement.profile_user',compact('information','user','userInformation','emergencyInformation'));
             } else {
                 $information = ProfileInformation::all();
-                return view('usermanagement.profile_user',compact('information','user','userInformation'));
+                return view('usermanagement.profile_user',compact('information','user','userInformation','emergencyInformation'));
             } 
         }
     }
@@ -377,15 +379,15 @@ class UserManagementController extends Controller
     // change password in db
     public function changePasswordDB(Request $request)
     {
-        $request->validate([
-            'current_password' => ['required', new MatchOldPassword],
-            'new_password' => ['required'],
-            'new_confirm_password' => ['same:new_password'],
-        ]);
+        // $request->validate([
+        //     'current_password' => ['required', new MatchOldPassword],
+        //     'new_password' => ['required'],
+        //     'new_confirm_password' => ['same:new_password'],
+        // ]);
 
         User::find(auth()->user()->id)->update(['password'=> Hash::make($request->new_password)]);
         DB::commit();
-        Toastr::success('User change successfully :)','Success');
+        Toastr::success('Password change successfully :)','Success');
         return redirect()->intended('home');
     }
 }

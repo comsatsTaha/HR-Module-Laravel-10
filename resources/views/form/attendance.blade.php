@@ -38,6 +38,7 @@
                             @csrf
                             <div class="row">
                                 
+                                  @if(auth()->user()->role_name == "Super Admin")
                             
                                 <div class="col-sm-6">
                                     <div class="form-group">
@@ -52,6 +53,7 @@
                                         {{-- <input class="form-control" type="email" id="email" name="email" placeholder="Auto email" readonly> --}}
                                     </div>
                                 </div>
+                                @endif
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Check In Date/Time</label>

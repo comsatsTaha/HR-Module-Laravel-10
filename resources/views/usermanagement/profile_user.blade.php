@@ -233,33 +233,19 @@
                                     <ul class="personal-info">
                                         <li>
                                             <div class="title">Name</div>
-                                            <div class="text">John Doe</div>
+                                            <div class="text">{{$emergencyInformation->name ?? ''}}</div>
                                         </li>
                                         <li>
                                             <div class="title">Relationship</div>
-                                            <div class="text">Father</div>
+                                            <div class="text">{{$emergencyInformation->relationship ?? ''}}</div>
                                         </li>
                                         <li>
                                             <div class="title">Phone </div>
-                                            <div class="text">9876543210, 9876543210</div>
+                                            <div class="text">{{$emergencyInformation->phone ?? ''}}</div>
                                         </li>
                                     </ul>
                                     <hr>
-                                    <h5 class="section-title">Secondary</h5>
-                                    <ul class="personal-info">
-                                        <li>
-                                            <div class="title">Name</div>
-                                            <div class="text">Karen Wills</div>
-                                        </li>
-                                        <li>
-                                            <div class="title">Relationship</div>
-                                            <div class="text">Brother</div>
-                                        </li>
-                                        <li>
-                                            <div class="title">Phone </div>
-                                            <div class="text">9876543210, 9876543210</div>
-                                        </li>
-                                    </ul>
+                                  
                                 </div>
                             </div>
                         </div>
@@ -1403,13 +1389,14 @@
             <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Personal Information</h5>
+                        <h5 class="modal-title">Emergency Information</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form>
+                        <form action="{{route('emergency/information/save')}}" method="POST">
+                            @csrf
                             <div class="card">
                                 <div class="card-body">
                                     <h3 class="card-title">Primary Contact</h3>
@@ -1417,64 +1404,29 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label>Name <span class="text-danger">*</span></label>
-                                                <input type="text" class="form-control">
+                                                <input type="text" class="form-control" name="name">
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label>Relationship <span class="text-danger">*</span></label>
-                                                <input class="form-control" type="text">
+                                                <input class="form-control" type="text" name="relationship">
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label>Phone <span class="text-danger">*</span></label>
-                                                <input class="form-control" type="text">
+                                                <input class="form-control" type="text" name="phone">
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Phone 2</label>
-                                                <input class="form-control" type="text">
-                                            </div>
-                                        </div>
+                                        
                                     </div>
                                 </div>
                             </div>
                             
-                            <div class="card">
-                                <div class="card-body">
-                                    <h3 class="card-title">Primary Contact</h3>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Name <span class="text-danger">*</span></label>
-                                                <input type="text" class="form-control">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Relationship <span class="text-danger">*</span></label>
-                                                <input class="form-control" type="text">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Phone <span class="text-danger">*</span></label>
-                                                <input class="form-control" type="text">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Phone 2</label>
-                                                <input class="form-control" type="text">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            
                             <div class="submit-section">
-                                <button class="btn btn-primary submit-btn">Submit</button>
+                                <button type="submit" class="btn btn-primary submit-btn">Submit</button>
                             </div>
                         </form>
                     </div>

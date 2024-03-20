@@ -7,6 +7,7 @@ use App\Http\Controllers\PhotosController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\EmergencyInformationController;
 use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\UserManagementController;
 use App\Http\Controllers\EmployeeController;
@@ -322,4 +323,8 @@ Route::controller(SalesController::class)->group(function () {
 // ----------------------------- training type  ------------------------------//
 Route::controller(PersonalInformationController::class)->group(function () {
     Route::post('user/information/save', 'saveRecord')->middleware('auth')->name('user/information/save');
+});
+
+Route::controller(EmergencyInformationController::class)->group(function () {
+    Route::post('emergency/information/save', 'saveRecord')->middleware('auth')->name('emergency/information/save');
 });
