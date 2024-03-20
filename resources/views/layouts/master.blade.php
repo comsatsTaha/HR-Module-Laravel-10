@@ -62,7 +62,7 @@
 		<div class="header">
 			<!-- Logo -->
 			<div class="header-left">
-				<a href="{{ route('home') }}" class="logo">
+				<a  class="logo">
 					<img src="{{ URL::to('/assets/images/comsats_software_solutions_logo.png') }}" width="90" height="90" alt="">
 				</a>
 			</div>
