@@ -184,7 +184,7 @@ class UserManagementController extends Controller
                     {
                         $image_name = rand() . '.' . $image->getClientOriginalExtension();
                         $image->move(public_path('/assets/images/'), $image_name);
-                        unlink('assets/images/'.Auth::user()->avatar);
+                        // unlink('assets/images/'.Auth::user()->avatar);
                     }
                 }
                 $update = [

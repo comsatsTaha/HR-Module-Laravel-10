@@ -46,7 +46,7 @@
                                             <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="material-icons">more_vert</i></a>
                                         <div class="dropdown-menu dropdown-menu-right">
                                             <a class="dropdown-item edit-designation" href="#" data-toggle="modal" data-target="#edit_designation" data-id="{{$designation->id}}" data-position="{{$designation->position}}"><i class="fa fa-pencil m-r-5"></i> Edit</a>
-                                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#delete_designation"><i class="fa fa-trash-o m-r-5"></i> Delete</a>
+                                            <a class="dropdown-item delete_designation" href="#" data-toggle="modal" data-id="{{$designation->id}}" data-target="#delete_designation"><i class="fa fa-trash-o m-r-5"></i> Delete</a>
                                         </div>
                                         </div>
                                     </td>
@@ -129,14 +129,18 @@
                             <p>Are you sure want to delete?</p>
                         </div>
                         <div class="modal-btn delete-action">
+                            <form action="{{ route('form/designations/delete') }}" method="POST">
+                                @csrf
+                                <input type="hidden" id="designation_id" name="id"/> 
                             <div class="row">
                                 <div class="col-6">
-                                    <a href="javascript:void(0);" class="btn btn-primary continue-btn">Delete</a>
+                                    <button type="submit" class="btn btn-primary continue-btn submit-btn">Delete</button>
                                 </div>
                                 <div class="col-6">
                                     <a href="javascript:void(0);" data-dismiss="modal" class="btn btn-primary cancel-btn">Cancel</a>
                                 </div>
                             </div>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -160,5 +164,18 @@
     });
 </script>
     
+
+<script>
+    // JavaScript to populate modal fields when edit button is clicked
+    $(document).ready(function(){
+        $('.delete_designation').on('click', function(){
+            // alert();
+            var id = $(this).data('id');
+            $('#designation_id').val(id);
+        });
+    });
+</script>
+
+
     @endsection
 @endsection

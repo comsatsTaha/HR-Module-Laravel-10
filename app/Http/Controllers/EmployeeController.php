@@ -366,17 +366,19 @@ class EmployeeController extends Controller
        
         $user= User::with('personalInformation','profileInformation')->where('user_id',$user_id)->first();
         // dd($user);
-      
-        return view('form.employeeprofile',compact('user','users'));
+        $departments= department::all();
+        $designations= positionType::all();
+        return view('form.employeeprofile',compact('user','users','departments','designations'));
     }
 
     public function attendanceemployee($user_id){
         $employee= Employee::where('attendance_employee_id',$user_id)->first();
         $users= User::with('personalInformation','profileInformation')->where('user_id',$employee->employee_id)->get();
-        $user= User::with('personalInformation','profileInformation')->where('user_id',$employee->employee_id)->first();
+        $user= User::with('personalInformation','profileInformation','emergencycontact')->where('user_id',$employee->employee_id)->first();
 
         $departments= department::all();
         $designations= positionType::all();
+        // dd($user);
         return view('form.employeeprofile',compact('user','users','departments','designations')); 
     }
 
@@ -448,6 +450,23 @@ class EmployeeController extends Controller
 
             department::destroy($request->id);
             Toastr::success('Department deleted successfully :)','Success');
+            return redirect()->back();
+        
+        } catch(\Exception $e) {
+
+            DB::rollback();
+            Toastr::error('Department delete fail :)','Error');
+            return redirect()->back();
+        }
+    }
+
+    public function deleteRecordDesignations(Request $request) 
+    {
+        // dd($request->all());
+        try {
+
+            positionType::destroy($request->id);
+            Toastr::success('Designation deleted successfully :)','Success');
             return redirect()->back();
         
         } catch(\Exception $e) {

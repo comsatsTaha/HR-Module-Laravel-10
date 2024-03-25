@@ -25,7 +25,7 @@
                             <div class="profile-view">
                                 <div class="profile-img-wrap">
                                     <div class="profile-img">
-                                        {{-- <a href="#"><img alt="" src="{{ URL::to('/assets/images/'. $user->avatar) }}" alt="{{ $user->name }}"></a> --}}
+                                        <a href="#"><img alt="" src="{{ URL::to('/assets/images/'. $user->avatar) }}" alt="{{ $user->name }}"></a>
                                     </div>
                                 </div>
                                 <div class="profile-basic">
@@ -185,38 +185,24 @@
                                     <ul class="personal-info">
                                         <li>
                                             <div class="title">Name</div>
-                                            <div class="text">John Doe</div>
+                                            <div class="text">{{$user->emergencycontact->name ?? ''}}</div>
                                         </li>
                                         <li>
                                             <div class="title">Relationship</div>
-                                            <div class="text">Father</div>
+                                            <div class="text">{{$user->emergencycontact->relationship ?? ''}}</div>
                                         </li>
                                         <li>
                                             <div class="title">Phone </div>
-                                            <div class="text">9876543210, 9876543210</div>
+                                            <div class="text">{{$user->emergencycontact->phone ?? ''}}</div>
                                         </li>
                                     </ul>
                                     <hr>
-                                    <h5 class="section-title">Secondary</h5>
-                                    <ul class="personal-info">
-                                        <li>
-                                            <div class="title">Name</div>
-                                            <div class="text">Karen Wills</div>
-                                        </li>
-                                        <li>
-                                            <div class="title">Relationship</div>
-                                            <div class="text">Brother</div>
-                                        </li>
-                                        <li>
-                                            <div class="title">Phone </div>
-                                            <div class="text">9876543210, 9876543210</div>
-                                        </li>
-                                    </ul>
+                                  
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="row">
+                    {{-- <div class="row">
                         <div class="col-md-6 d-flex">
                             <div class="card profile-box flex-fill">
                                 <div class="card-body">
@@ -279,8 +265,8 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
+                    </div> --}}
+                    {{-- <div class="row">
                         <div class="col-md-6 d-flex">
                             <div class="card profile-box flex-fill">
                                 <div class="card-body">
@@ -360,7 +346,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
                 <!-- /Profile Info Tab -->
                 
@@ -1202,70 +1188,37 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form>
+                        <form action="{{route('emergency/information/save')}}" method="POST">
+                            @csrf
                             <div class="card">
                                 <div class="card-body">
-                                    <h3 class="card-title">Primary Contact</h3>
+                                    <h3 class="card-title">Contact Details</h3>
+                                    <input type="hidden" name="user_id" value="{{$user->user_id}}" />
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label>Name <span class="text-danger">*</span></label>
-                                                <input type="text" class="form-control">
+                                                <input type="text" class="form-control" name="name">
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label>Relationship <span class="text-danger">*</span></label>
-                                                <input class="form-control" type="text">
+                                                <input class="form-control" type="text" name="relationship">
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label>Phone <span class="text-danger">*</span></label>
-                                                <input class="form-control" type="text">
+                                                <input class="form-control" type="text" name="phone">
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Phone 2</label>
-                                                <input class="form-control" type="text">
-                                            </div>
-                                        </div>
+                                        
                                     </div>
                                 </div>
                             </div>
                             
-                            <div class="card">
-                                <div class="card-body">
-                                    <h3 class="card-title">Primary Contact</h3>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Name <span class="text-danger">*</span></label>
-                                                <input type="text" class="form-control">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Relationship <span class="text-danger">*</span></label>
-                                                <input class="form-control" type="text">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Phone <span class="text-danger">*</span></label>
-                                                <input class="form-control" type="text">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Phone 2</label>
-                                                <input class="form-control" type="text">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            
                             <div class="submit-section">
                                 <button class="btn btn-primary submit-btn">Submit</button>
                             </div>

@@ -12,29 +12,28 @@ class EmergencyInformationController extends Controller
     public function saveRecord(Request $request)
     {
         // dd($request->all());
-        $request->merge(['user_id'=>auth()->user()->id]);
      
 
-        DB::beginTransaction();
-        try {
+        // DB::beginTransaction();
+        // try {
             
-            $user_information = EmergencyContact::firstOrNew(
-                ['user_id' =>  $request->user_id],
+            $user_information = EmergencyContact::updateOrCreate(
+                ['user_id' => $request->user_id], 
+                $request->all() 
             );
-            $user_information->user_id              = $request->user_id;
-            $user_information->name          = $request->name;
-            $user_information->relationship = $request->relationship;
-            $user_information->phone                  = $request->phone;
-            $user_information->save();
+            
+        
+
+          
 
             DB::commit();
-            Toastr::success('Create Emergency information successfully :)','Success');
+            Toastr::success('Emergency information successfully :)','Success');
             return redirect()->back();
             
-        } catch(\Exception $e) {
-            DB::rollback();
-            Toastr::error('Add personal information fail :)','Error');
-            return redirect()->back();
-        }
+        // } catch(\Exception $e) {
+        //     DB::rollback();
+        //     Toastr::error('Add Emergency information fail :)','Error');
+        //     return redirect()->back();
+        // }
     }
 }

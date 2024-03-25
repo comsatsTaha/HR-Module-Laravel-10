@@ -23,7 +23,8 @@ use App\Http\Controllers\TrainersController;
 use App\Http\Controllers\TrainingTypeController;
 use App\Http\Controllers\SalesController;
 use App\Http\Controllers\PersonalInformationController;
-
+use App\Models\Attendance;
+use App\Models\Employee;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,6 +36,73 @@ use App\Http\Controllers\PersonalInformationController;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+Route::get('/taha', function () {
+    
+    $month = null; 
+    $year = 2024;
+
+    if($month != null && $year !=null)
+    {
+        $attendanceData = Attendance::whereMonth('date_time', $month)
+        ->whereYear('date_time', $year)
+        ->get();
+    }
+    else{
+        $attendanceData = Attendance::all();
+    }
+
+    $user = Employee::where('id','5')->first();
+    $mergedData = [];
+    foreach ($attendanceData as $attendance) {
+            if ($user->attendance_employee_id == $attendance->attendance_employee_id) {
+                $date = date('Y-m-d', strtotime($attendance->date_time));
+                
+                if ($attendance->type == "0") {
+                    $mergedData[$date]['uid'] = $attendance->uid;
+                    $mergedData[$date]['name'] = $user->name;
+                    $mergedData[$date]['state'] = $attendance->state;
+                    $mergedData[$date]['check_in_time'] = $attendance->date_time;
+                } elseif ($attendance->type == 1) {
+                    if (!isset($mergedData[$date])) {
+                        $mergedData[$date] = [
+                            'uid' => $attendance->uid,
+                            'name' => $user->name,
+                            'state' => $attendance->state,
+                            'check_out_time' => $attendance->date_time
+                        ];
+                    } else {
+                        $mergedData[$date]['check_out_time'] = $attendance->date_time;
+                    }
+                }
+            }
+    }
+    foreach ($mergedData as &$entry) {
+        if (isset($entry['check_in_time']) && isset($entry['check_out_time'])) {
+            $checkIn = new DateTime($entry['check_in_time']);
+            $checkOut = new DateTime($entry['check_out_time']);
+            $diff = $checkIn->diff($checkOut);
+            $minutes = $diff->h * 60 + $diff->i;
+            $hours = floor($minutes / 60);
+            $remainingMinutes = $minutes % 60;
+            $hoursAndMinutes = sprintf("%02d:%02d", $hours, $remainingMinutes);
+            $entry['hours'] = $hoursAndMinutes;
+        }
+    }
+    $filePath = public_path('filtered_attendance.csv');
+    $fileHandle = fopen($filePath, 'w');
+    fputcsv($fileHandle, ['uid', 'name', 'state', 'check_in_time', 'check_out_time', 'hours']);
+    foreach ($mergedData as $attendance) {
+        fputcsv($fileHandle, $attendance);
+    }
+    fclose($fileHandle);
+    return response()->download($filePath)->deleteFileAfterSend(true);
+});
+
+
+
+
+
 
 /** for side bar menu active */
 function set_active( $route ) {

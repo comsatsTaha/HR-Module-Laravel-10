@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('emergency_contacts', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id');
+            $table->string('user_id');
             $table->string('name');
             $table->string('relationship');
             $table->string('phone');

@@ -63,4 +63,7 @@ class User extends Authenticatable
     public function profileInformation(){
         return $this->hasOne(ProfileInformation::class,'user_id','user_id');
     }
+    public function emergencycontact(){
+        return $this->hasOne(EmergencyContact::class,'user_id','user_id');
+    }
 }
