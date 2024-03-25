@@ -32,7 +32,7 @@
                                     <div class="row">
                                         <div class="col-md-5">
                                             <div class="profile-info-left">
-                                                <h3 class="user-name m-t-0 mb-0">{{ $user->name }}</h3>
+                                                <h3 class="user-name m-t-0 mb-0">{{ $user->employee->name }}</h3>
                                                 <h6 class="text-muted"> {{ $user->department }}</h6>
                                                 <small class="text-muted">{{ $user->position }}</small>
                                                 <div class="staff-id">Employee ID : {{ $user->user_id }}</div>
@@ -84,11 +84,11 @@
                                                     <div class="text">
                                                         <div class="avatar-box">
                                                             <div class="avatar avatar-xs">
-                                                                <img src="{{ URL::to('/assets/images/'. $user->avatar) }}" alt="{{ $user->name }}">
+                                                                <img src="{{ URL::to('/assets/images/'. $user->avatar) }}" alt="{{ $user->employee->name }}">
                                                             </div>
                                                         </div>
                                                         <a href="{{ route('employee/profile', ['user_id' => $user->user_id]) }}">
-                                                            {{ $user->name }}
+                                                            {{ $user->employee->name }}
                                                         </a>
                                                     </div>
                                                 </li> 
@@ -853,7 +853,7 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="profile-img-wrap edit-img">
-                                        <img class="inline-block" src="{{ URL::to('/assets/images/'. $user->avatar) }}" alt="{{ $user->name }}">
+                                        <img class="inline-block" src="{{ URL::to('/assets/images/'. $user->avatar) }}" alt="{{ $user->employee->name }}">
                                         <div class="fileupload btn">
                                             <span class="btn-text">edit</span>
                                             <input class="upload" type="file" id="image" name="images">
@@ -866,8 +866,8 @@
                                         <div class="col-md-12">
                                             <div class="form-group">
                                                 <label>Full Name</label>
-                                                <input type="text" class="form-control" id="name" name="name" value="{{ $user->name }}">
-                                                <input type="text" class="form-control" id="user_id" name="user_id" value="{{ $user->user_id }}">
+                                                <input type="text" class="form-control" id="name" name="name" value="{{ $user->employee->name }}">
+                                                <input type="hidden" class="form-control" id="user_id" name="user_id" value="{{ $user->user_id }}">
                                                 <input type="hidden" class="form-control" id="email" name="email" value="{{ $user->email }}">
                                             </div>
                                         </div>
@@ -959,13 +959,13 @@
                                         <select class="select" id="department" name="department">
                                             @if(!empty($user->profileInformation))
                                                 <option value="{{ $user->profileInformation->department }}" {{ ( $user->profileInformation->department == $user->profileInformation->department) ? 'selected' : '' }}>{{ $user->profileInformation->department }} </option>
-                                                <option value="Web Development">Web Development</option>
-                                                <option value="IT Management">IT Management</option>
-                                                <option value="Marketing">Marketing</option>
+                                                @foreach($departments as $department)
+                                                <option value="{{$department->department}}">{{$department->department}}</option>
+                                                @endforeach
                                             @else
-                                                <option value="Web Development">Web Development</option>
-                                                <option value="IT Management">IT Management</option>
-                                                <option value="Marketing">Marketing</option>
+                                            @foreach($departments as $department)
+                                            <option value="{{$department->department}}">{{$department->department}}</option>
+                                            @endforeach
                                             @endif
                                         </select>
                                     </div>
@@ -976,13 +976,13 @@
                                         <select class="select" id="designation" name="designation">
                                             @if(!empty($user->profileInformation))
                                                 <option value="{{ $user->profileInformation->designation }}" {{ ( $user->profileInformation->designation == $user->profileInformation->designation) ? 'selected' : '' }}>{{ $user->profileInformation->designation }} </option>
-                                                <option value="Web Designer">Web Designer</option>
-                                                <option value="Web Developer">Web Developer</option>
-                                                <option value="Android Developer">Android Developer</option>
+                                                @foreach($designations as $designation)
+                                                <option value="{{$designation->position}}">{{$designation->position}}</option>
+                                                @endforeach
                                             @else
-                                                <option value="Web Designer">Web Designer</option>
-                                                <option value="Web Developer">Web Developer</option>
-                                                <option value="Android Developer">Android Developer</option>
+                                            @foreach($designations as $designation)
+                                            <option value="{{$designation->position}}">{{$designation->position}}</option>
+                                            @endforeach
                                             @endif
                                         </select>
                                     </div>
@@ -991,16 +991,11 @@
                                     <div class="form-group">
                                         <label>Reports To <span class="text-danger">*</span></label>
                                         <select class="select" id="" name="reports_to">
-                                            @if(!empty($user->profileInformation))
-                                                <option value="{{ $user->profileInformation->reports_to }}" {{ ( $user->profileInformation->reports_to == $user->profileInformation->reports_to) ? 'selected' : '' }}>{{ $user->profileInformation->reports_to }} </option>
-                                                    @foreach ($users as $user )
-                                                    <option value="{{ $user->name }}">{{ $user->name }}</option>
-                                                @endforeach
-                                            @else
+                                         
                                                 @foreach ($users as $user )
-                                                    <option value="{{ $user->name }}">{{ $user->name }}</option>
+                                                    <option value="{{ $user->employee->name }}">{{ $user->employee->name }}</option>
                                                 @endforeach
-                                            @endif
+                                         
                                         </select>
                                     </div>
                                 </div>

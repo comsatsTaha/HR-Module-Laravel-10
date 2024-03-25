@@ -11,7 +11,9 @@ use App\Models\Employee;
 use App\Models\department;
 use App\Models\User;
 use App\Models\module_permission;
+use App\Models\positionType;
 use App\Models\SalaryStructure;
+use Laravel\Ui\Presets\React;
 use Rats\Zkteco\Lib\ZKTeco;
 
 class EmployeeController extends Controller
@@ -361,8 +363,10 @@ class EmployeeController extends Controller
         //         ->leftJoin('profile_information','profile_information.user_id','users.user_id')
         //         ->where('users.user_id',$user_id)
         //         ->get(); 
+       
         $user= User::with('personalInformation','profileInformation')->where('user_id',$user_id)->first();
         // dd($user);
+      
         return view('form.employeeprofile',compact('user','users'));
     }
 
@@ -370,7 +374,10 @@ class EmployeeController extends Controller
         $employee= Employee::where('attendance_employee_id',$user_id)->first();
         $users= User::with('personalInformation','profileInformation')->where('user_id',$employee->employee_id)->get();
         $user= User::with('personalInformation','profileInformation')->where('user_id',$employee->employee_id)->first();
-        return view('form.employeeprofile',compact('user','users')); 
+
+        $departments= department::all();
+        $designations= positionType::all();
+        return view('form.employeeprofile',compact('user','users','departments','designations')); 
     }
 
     /** page departments */
@@ -454,7 +461,8 @@ class EmployeeController extends Controller
     /** page designations */
     public function designationsIndex()
     {
-        return view('form.designations');
+        $designations = positionType::all();
+        return view('form.designations',compact('designations'));
     }
 
     /** page time sheet */
@@ -499,6 +507,16 @@ class EmployeeController extends Controller
         }
         return redirect()->back();
 
+    }
+
+    public function saveRecordDesignations(Request $request){
+        positionType::create($request->all());
+        return redirect()->back();
+    }
+
+    public function updateRecordDesignations(Request $request,$id){
+        positionType::create($request->all());
+        return redirect()->back();
     }
 
 }

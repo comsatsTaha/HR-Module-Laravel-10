@@ -151,7 +151,23 @@ class UserManagementController extends Controller
     // save profile information
     public function profileInformation(Request $request)
     {
+        // dd($request->all());
+        
+      
         try {
+
+            $employee= Employee::where('employee_id', $request->user_id)->first();
+            $employee->update([
+                'name'=> $request->name,
+                'employee_id'=>$request->user_id,
+                'birth_date'=>$request->birthDate,
+                'gender'=>$request->gender
+            ]); 
+
+            $user= User::where('user_id', $request->user_id)->first();
+            $user->update([
+                'name'=> $request->name,
+            ]); 
             if(!empty($request->images))
             {
                 $image_name = $request->hidden_image;
@@ -178,6 +194,8 @@ class UserManagementController extends Controller
                 ];
                 User::where('user_id',$request->user_id)->update($update);
             } 
+            // dd($request->all());
+
 
             $information = ProfileInformation::updateOrCreate(['user_id' => $request->user_id]);
             $information->name         = $request->name;

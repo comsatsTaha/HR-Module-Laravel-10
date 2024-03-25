@@ -15,6 +15,7 @@
                     </div>
                 </div>
             </div>
+
             {{-- message --}}
             {!! Toastr::message() !!}
             <!-- /Page Header -->
@@ -26,7 +27,7 @@
                                 <div class="profile-img-wrap">
                                     <div class="profile-img">
                                         <a href="#">
-                                            <img alt="" src="{{ URL::to('/assets/images/'.Auth::user()->avatar) }}" alt="{{ Auth::user()->name }}" >
+                                            <img alt="" src="{{ URL::to('/assets/images/'.Auth::user()->avatar) }}" alt="{{ Auth::user()->employee->name }}" >
                                         </a>
                                     </div>
                                 </div>
@@ -34,7 +35,7 @@
                                     <div class="row">
                                         <div class="col-md-5">
                                             <div class="profile-info-left">
-                                                <h3 class="user-name m-t-0 mb-0">{{ Session::get('name') }}</h3>
+                                                <h3 class="user-name m-t-0 mb-0">{{ auth()->user()->employee->name }}</h3>
                                                 <h6 class="text-muted">{{ Session::get('department') }}</h6>
                                                 <small class="text-muted">{{ Session::get('position') }}</small>
                                                 <div class="staff-id">User ID : {{ Session::get('user_id') }}</div>
@@ -85,11 +86,11 @@
                                                         <div class="text">
                                                             <div class="avatar-box">
                                                                 <div class="avatar avatar-xs">
-                                                                    <img src="{{ URL::to('/assets/images/'. Auth::user()->avatar) }}" alt="{{ Auth::user()->name }}">
+                                                                    <img src="{{ URL::to('/assets/images/'. Auth::user()->avatar) }}" alt="{{ Auth::user()->employee->name }}">
                                                                 </div>
                                                             </div>
                                                             <a href="#">
-                                                                {{ Auth::user()->name }}
+                                                                {{ Auth::user()->employee->name }}
                                                             </a>
                                                         </div>
                                                     </li>
@@ -111,11 +112,11 @@
                                                         <div class="text">
                                                             <div class="avatar-box">
                                                                 <div class="avatar avatar-xs">
-                                                                    <img src="{{ URL::to('/assets/images/'. Auth::user()->avatar) }}" alt="{{ Auth::user()->name }}">
+                                                                    <img src="{{ URL::to('/assets/images/'. Auth::user()->avatar) }}" alt="{{ Auth::user()->employee->name }}">
                                                                 </div>
                                                             </div>
                                                             <a href="#">
-                                                                {{ Auth::user()->name }}
+                                                                {{ Auth::user()->employee->name }}
                                                             </a>
                                                         </div>
                                                     </li>
@@ -887,7 +888,7 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="profile-img-wrap edit-img">
-                                        <img class="inline-block" src="{{ URL::to('/assets/images/'. Auth::user()->avatar) }}" alt="{{ Auth::user()->name }}">
+                                        <img class="inline-block" src="{{ URL::to('/assets/images/'. Auth::user()->avatar) }}" alt="{{ Auth::user()->employee->name }}">
                                         <div class="fileupload btn">
                                             <span class="btn-text">edit</span>
                                             <input class="upload" type="file" id="image" name="images">
@@ -898,7 +899,7 @@
                                         <div class="col-md-12">
                                             <div class="form-group">
                                                 <label>Full Name</label>
-                                                <input type="text" class="form-control" id="name" name="name" value="{{ Auth::user()->name }}">
+                                                <input type="text" class="form-control" id="name" name="name" value="{{ Auth::user()->employee->name }}">
                                                 <input type="hidden" class="form-control" id="user_id" name="user_id" value="{{ Auth::user()->user_id }}">
                                                 <input type="hidden" class="form-control" id="email" name="email" value="{{ Auth::user()->email }}">
                                             </div>
@@ -1016,7 +1017,7 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="profile-img-wrap edit-img">
-                                        <img class="inline-block" src="{{ URL::to('/assets/images/'. Auth::user()->avatar) }}" alt="{{ Auth::user()->name }}">
+                                        <img class="inline-block" src="{{ URL::to('/assets/images/'. Auth::user()->avatar) }}" alt="{{ Auth::user()->employee->name }}">
                                         <div class="fileupload btn">
                                             <span class="btn-text">edit</span>
                                             <input class="upload" type="file" id="upload" name="upload">
@@ -1026,7 +1027,7 @@
                                         <div class="col-md-12">
                                             <div class="form-group">
                                                 <label>Full Name</label>
-                                                <input type="text" class="form-control" id="name" name="name" value="{{ Auth::user()->name }}">
+                                                <input type="text" class="form-control" id="name" name="name" value="{{ Auth::user()->employee->name }}">
                                                 <input type="hidden" class="form-control" id="user_id" name="user_id" value="{{ Auth::user()->user_id }}">
                                                 <input type="hidden" class="form-control" id="email" name="email" value="{{ Auth::user()->email }}">
                                             </div>
