@@ -217,19 +217,19 @@
                             <div class="form-group">
                                 <label>Dates <span class="text-danger">*</span></label>
                                 {{-- <div class="cal-icon"> --}}
-                                    <input class="form-control" type="date"  name="from_date">
+                                    <input class="form-control" type="date"  name="from_date" id="from_date">
                                 {{-- </div> --}}
                             </div>
 
                             <div class="form-group">
                                 <label>To <span class="text-danger">*</span></label>
                           
-                                    <input class="form-control" type="date" name="to_date">
+                                    <input class="form-control" type="date" name="to_date" id="to_date">
                           
                             </div>
                             <div class="form-group">
                                 <label>Number of days <span class="text-danger">*</span></label>
-                                <input class="form-control"  type="text" name="day">
+                                <input class="form-control" id="number_of_days" readonly  type="text" name="day">
                             </div>
                             {{-- <div class="form-group">
                                 <label>Remaining Leaves <span class="text-danger">*</span></label>
@@ -275,19 +275,19 @@
                             </div>
                             <div class="form-group">
                                 <label>From <span class="text-danger">*</span></label>
-                                <div class="cal-icon">
-                                    <input type="text" class="form-control datetimepicker" id="e_from_date" name="from_date" value="">
-                                </div>
+                                {{-- <div class="cal-icon"> --}}
+                                    <input type="date" class="form-control " id="e_from_date" name="from_date" value="">
+                                {{-- </div> --}}
                             </div>
                             <div class="form-group">
                                 <label>To <span class="text-danger">*</span></label>
-                                <div class="cal-icon">
-                                    <input type="text" class="form-control datetimepicker" id="e_to_date" name="to_date" value="">
-                                </div>
+                                {{-- <div class="cal-icon"> --}}
+                                    <input type="date" class="form-control " id="e_to_date" name="to_date" value="">
+                                {{-- </div> --}}
                             </div>
                             <div class="form-group">
                                 <label>Number of days <span class="text-danger">*</span></label>
-                                <input class="form-control" readonly type="text" id="e_number_of_days" name="number_of_days" value="">
+                                <input class="form-control" readonly  type="text"  name="number_of_days"  id="e_number_of_days">
                             </div>
                             <div class="form-group">
                                 <label>Leave Reason <span class="text-danger">*</span></label>
@@ -338,7 +338,56 @@
     </div>
     <!-- /Page Wrapper -->
     @section('script')
+  
+    
+<script>
+  $(document).on('change','#to_date',function()
+    {  
+       
+        const fromDateInput = document.getElementById('from_date');
+        const toDateInput = document.getElementById('to_date');
+        // const dayInput = document.getElementById('e_number_of_days');
 
+            const fromDate = new Date(fromDateInput.value);
+            const toDate = new Date(toDateInput.value);
+            const differenceInTime = toDate.getTime() - fromDate.getTime();
+            const differenceInDays = differenceInTime / (1000 * 3600 * 24);
+            if (differenceInDays >= 0) {
+              
+                $("#number_of_days").val(differenceInDays.toFixed(0));
+            } else {
+                dayInput.value = ''; // Reset to empty if invalid date selection
+            }
+       
+
+    
+    });
+</script>
+
+
+<script>
+    $(document).on('change','#e_to_date',function()
+      {  
+         
+          const fromDateInput = document.getElementById('e_from_date');
+          const toDateInput = document.getElementById('e_to_date');
+          // const dayInput = document.getElementById('e_number_of_days');
+  
+              const fromDate = new Date(fromDateInput.value);
+              const toDate = new Date(toDateInput.value);
+              const differenceInTime = toDate.getTime() - fromDate.getTime();
+              const differenceInDays = differenceInTime / (1000 * 3600 * 24);
+              if (differenceInDays >= 0) {
+                
+                  $("#e_number_of_days").val(differenceInDays.toFixed(0));
+              } else {
+                  dayInput.value = ''; // Reset to empty if invalid date selection
+              }
+         
+  
+      
+      });
+  </script>
     
     <script>
         document.getElementById("year").innerHTML = new Date().getFullYear();
